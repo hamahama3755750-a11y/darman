@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="ckb" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>سیستەمی دەرمانخانە</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;700&family=Noto+Sans+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+<style>
+  :root {
+    --bg: #F3F1EA;
+    --panel: #FFFFFF;
+    --ink: #1F3A34;
+    --ink-dim: #5C6F69;
+    --teal: #146356;
+    --teal-deep: #0E4A40;
+    --amber: #D98E2B;
+    --amber-soft: #F4D9A8;
+    --danger: #C1443A;
+    --danger-soft: #F6D8D5;
+    --border: rgba(20, 58, 52, 0.14);
+    --ok: #3E8E4F;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Noto Sans Arabic', sans-serif;
+    min-height: 100vh;
+    padding-bottom: 60px;
+  }
+
+  header {
+    background: var(--teal);
+    color: #F3F1EA;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    box-shadow: 0 4px 16px rgba(14,74,64,0.25);
+  }
+
+  header h1 {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 22px;
+  }
+
+  header .rate {
+    font-size: 13px;
+    color: var(--amber-soft);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  header .rate input {
+    width: 90px;
+    padding: 6px 8px;
+    border-radius: 8px;
+    border: none;
+    font-family: 'Noto Sans Arabic', sans-serif;
+    text-align: center;
+  }
+
+  nav {
+    display: flex;
+    gap: 8px;
+    padding: 16px 24px 0;
+    max-width: 1100px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+  }
+
+  .tab-btn {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 11px 22px;
+    border-radius: 12px 12px 0 0;
+    border: 1px solid var(--border);
+    border-bottom: none;
+    background: #E9E5D8;
+    color: var(--ink-dim);
+    cursor: pointer;
+  }
+
+  .tab-btn.active {
+    background: var(--panel);
+    color: var(--teal);
+    font-weight: 700;
+  }
+
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 0 14px 14px 14px;
+    padding: 24px;
+    display: none;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+  }
+
+  .panel.active { display: block; }
+
+  .row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  h2 {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 19px;
+    margin-bottom: 16px;
+    color: var(--teal-deep);
+  }
+
+  input, select {
+    font-family: 'Noto Sans Arabic', sans-serif;
+    font-size: 15px;
+    padding: 11px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: #FBFAF6;
+    color: var(--ink);
+  }
+
+  input:focus, select:focus {
+    outline: none;
+    border-color: var(--teal);
+  }
+
+  button {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 11px 20px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.1s ease, background 0.12s ease;
+  }
+
+  button:active { transform: scale(0.97); }
+
+  .btn-primary { background: var(--teal); color: #fff; }
+  .btn-primary:hover { background: var(--teal-deep); }
+  .btn-amber { background: var(--amber); color: #fff; }
+  .btn-amber:hover { background: #C17E1E; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--ink-dim); }
+  .btn-ghost:hover { background: #F0EEE5; }
+  .btn-sm { padding: 7px 12px; font-size: 13px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+    font-size: 14px;
+  }
+
+  th, td {
+    padding: 11px 10px;
+    text-align: right;
+    border-bottom: 1px solid var(--border);
+  }
+
+  th {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    color: var(--ink-dim);
+    font-weight: 500;
+    font-size: 13px;
+  }
+
+  tr.warn-expiry td { background: var(--amber-soft); }
+  tr.danger-expiry td { background: var(--danger-soft); }
+  tr.low-stock .qty-cell { color: var(--danger); font-weight: 700; }
+
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-family: 'Noto Kufi Arabic', sans-serif;
+  }
+
+  .tag-danger { background: var(--danger); color: #fff; }
+  .tag-warn { background: var(--amber); color: #fff; }
+  .tag-ok { background: var(--ok); color: #fff; }
+
+  .cart-box {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-top: 18px;
+    overflow: hidden;
+  }
+
+  .totals {
+    display: flex;
+    justify-content: flex-end;
+    gap: 26px;
+    padding: 16px 20px;
+    background: #F3F1EA;
+    border-top: 1px solid var(--border);
+    font-family: 'Noto Kufi Arabic', sans-serif;
+  }
+
+  .totals .val { color: var(--teal-deep); font-size: 19px; font-weight: 700; }
+
+  /* Modal */
+  .modal-bg {
+    position: fixed; inset: 0;
+    background: rgba(15,30,26,0.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+  }
+
+  .modal-bg.show { display: flex; }
+
+  .modal {
+    background: var(--panel);
+    border-radius: 16px;
+    padding: 26px;
+    max-width: 480px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+
+  .modal h3 {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 18px;
+    margin-bottom: 18px;
+    color: var(--teal-deep);
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  .field label {
+    font-size: 13px;
+    color: var(--ink-dim);
+    font-family: 'Noto Kufi Arabic', sans-serif;
+  }
+
+  .field-row { display: flex; gap: 8px; }
+  .field-row input { flex: 1; }
+
+  #scanner-video-wrap {
+    position: relative;
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #000;
+    min-height: 240px;
+  }
+
+  #scanner-video-wrap video, #scanner-video-wrap canvas {
+    width: 100%;
+    display: block;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 26px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--teal-deep);
+    color: #fff;
+    padding: 12px 26px;
+    border-radius: 999px;
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    z-index: 200;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .empty-note {
+    text-align: center;
+    color: var(--ink-dim);
+    padding: 30px 10px;
+    font-size: 14px;
+  }
+
+  .search-wrap { flex: 1; min-width: 200px; }
+  .search-wrap input { width: 100%; }
+
+  #sellNameSuggest {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    left: 0;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+    max-height: 280px;
+    overflow-y: auto;
+    z-index: 30;
+    display: none;
+  }
+
+  #sellNameSuggest.show { display: block; }
+
+  .suggest-item {
+    padding: 10px 14px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .suggest-item:last-child { border-bottom: none; }
+  .suggest-item:hover, .suggest-item.active-hl { background: #F0EEE5; }
+
+  .suggest-item .s-name { font-weight: 500; }
+  .suggest-item .s-meta { font-size: 12px; color: var(--ink-dim); }
+  .suggest-item .s-out { color: var(--danger); font-size: 12px; }
+
+  .suggest-empty {
+    padding: 12px 14px;
+    font-size: 13px;
+    color: var(--ink-dim);
+    text-align: center;
+  }
+
+  /* Auth gate */
+  .auth-bg {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 500;
+    padding: 20px;
+  }
+
+  .auth-bg.show { display: flex; }
+
+  .auth-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px 28px;
+    max-width: 380px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+    text-align: center;
+  }
+
+  .auth-card h2 {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 19px;
+    color: var(--teal-deep);
+    margin-bottom: 8px;
+  }
+
+  .auth-card .auth-sub {
+    font-size: 13px;
+    color: var(--ink-dim);
+    margin-bottom: 20px;
+    line-height: 1.7;
+  }
+
+  .auth-card .field { text-align: right; }
+  .auth-card input { width: 100%; }
+  .auth-card button { width: 100%; margin-top: 6px; }
+
+  .auth-error {
+    color: var(--danger);
+    font-size: 13px;
+    margin-bottom: 10px;
+    display: none;
+  }
+
+  .user-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+  }
+
+  .user-box .role-tag {
+    background: rgba(255,255,255,0.18);
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 12px;
+  }
+
+  .user-box .btn-ghost {
+    color: #fff;
+    border-color: rgba(255,255,255,0.4);
+    padding: 6px 14px;
+  }
+  .user-box .btn-ghost:hover { background: rgba(255,255,255,0.12); }
+
+  .account-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 4px;
+    border-bottom: 1px solid var(--border);
+  }
+  .account-row:last-child { border-bottom: none; }
+
+  @media (max-width: 640px) {
+    header { flex-direction: column; align-items: flex-start; }
+    main { padding: 0 12px; }
+    .panel { padding: 16px; border-radius: 12px; }
+    .totals { flex-direction: column; gap: 6px; align-items: flex-end; }
+  }
+</style>
+</head>
+<body>
+
+<!-- FIRST-RUN: CREATE ADMIN ACCOUNT -->
+<div class="auth-bg" id="setupBg">
+  <div class="auth-card">
+    <h2>دروستکردنی هەژماری بەڕێوەبەر</h2>
+    <p class="auth-sub">یەکەم جارە سیستەمەکە بەکاردەهێنیت. تکایە هەژمارێکی بەڕێوەبەر (ئەدمین) دروست بکە.</p>
+    <p class="auth-error" id="setupError"></p>
+    <div class="field">
+      <label>ناوی بەکارهێنەر</label>
+      <input type="text" id="setupUsername" autocomplete="off">
+    </div>
+    <div class="field">
+      <label>وشەی نهێنی</label>
+      <input type="password" id="setupPassword" autocomplete="new-password">
+    </div>
+    <div class="field">
+      <label>دووبارەکردنەوەی وشەی نهێنی</label>
+      <input type="password" id="setupPassword2" autocomplete="new-password">
+    </div>
+    <button class="btn-primary" id="setupSubmitBtn">دروستکردنی هەژمار</button>
+  </div>
+</div>
+
+<!-- LOGIN GATE -->
+<div class="auth-bg" id="loginBg">
+  <div class="auth-card">
+    <h2>چوونەژوورەوە</h2>
+    <p class="auth-sub">سیستەمی بەڕێوەبردنی دەرمانخانە</p>
+    <p class="auth-error" id="loginError"></p>
+    <div class="field">
+      <label>ناوی بەکارهێنەر</label>
+      <input type="text" id="loginUsername" autocomplete="username">
+    </div>
+    <div class="field">
+      <label>وشەی نهێنی</label>
+      <input type="password" id="loginPassword" autocomplete="current-password">
+    </div>
+    <button class="btn-primary" id="loginSubmitBtn">چوونەژوورەوە</button>
+  </div>
+</div>
+
+<div id="appRoot" style="display:none;">
+
+<header>
+  <h1>سیستەمی بەڕێوەبردنی دەرمانخانە</h1>
+  <div class="row" style="gap:18px;">
+    <div class="rate">
+      نرخی دراو (١$ = دیناری):
+      <input type="number" id="exchangeRate" value="1450">
+    </div>
+    <div class="user-box">
+      <span id="currentUserLabel"></span>
+      <button class="btn-ghost btn-sm" id="logoutBtn">دەرچوون</button>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <button class="tab-btn active" data-tab="sell">فرۆشتن</button>
+  <button class="tab-btn" data-tab="inventory">کۆگا</button>
+  <button class="tab-btn" data-tab="history">مێژووی فرۆشتن</button>
+  <button class="tab-btn" data-tab="accounts" id="accountsTabBtn" style="display:none;">هەژمارەکان</button>
+</nav>
+
+<main>
+
+  <!-- SELL TAB -->
+  <section class="panel active" id="panel-sell">
+    <h2>خستنە ناو سەبەتەی فرۆشتن</h2>
+    <div class="row">
+      <input type="text" id="sellBarcodeInput" placeholder="بارکۆد بنووسە یان سکانی بکە و Enter بکە" style="flex:1; min-width:220px;">
+      <button class="btn-amber" id="openScannerSell">📷 کردنەوەی کامێرا</button>
+    </div>
+
+    <div class="row" style="margin-top:10px; position:relative;">
+      <div style="flex:1; min-width:220px; position:relative;">
+        <input type="text" id="sellNameInput" placeholder="یان بە ناوی دەرمان بگەڕێ..." style="width:100%;" autocomplete="off">
+        <div id="sellNameSuggest"></div>
+      </div>
+    </div>
+
+    <div class="cart-box">
+      <table>
+        <thead>
+          <tr>
+            <th>ناوی دەرمان</th>
+            <th>بارکۆد</th>
+            <th>عدد</th>
+            <th>نرخی یەک (IQD)</th>
+            <th>نرخی یەک ($)</th>
+            <th>کۆی گشتی</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="cartBody"></tbody>
+      </table>
+      <p class="empty-note" id="cartEmptyNote">سەبەتەکە بەتاڵە — بارکۆدێک بنووسە بۆ زیادکردنی دەرمان</p>
+    </div>
+
+    <div class="totals">
+      <div>کۆی گشتی (دینار): <span class="val" id="totalIQD">0</span></div>
+      <div>کۆی گشتی ($): <span class="val" id="totalUSD">0</span></div>
+    </div>
+
+    <div class="row" style="justify-content:flex-end; margin-top:14px;">
+      <button class="btn-ghost" id="clearCartBtn">پاککردنەوەی سەبەتە</button>
+      <button class="btn-primary" id="checkoutBtn">تەواوکردنی فرۆشتن</button>
+    </div>
+  </section>
+
+  <!-- INVENTORY TAB -->
+  <section class="panel" id="panel-inventory">
+    <h2>لیستی دەرمانەکان</h2>
+    <div class="row" style="margin-bottom: 6px;">
+      <div class="search-wrap">
+        <input type="text" id="invSearch" placeholder="گەڕان بە ناو یان بارکۆد...">
+      </div>
+      <button class="btn-primary" id="openAddModal">+ زیادکردنی دەرمانی نوێ</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ناوی دەرمان</th>
+          <th>بارکۆد</th>
+          <th>عدد لە کۆگا</th>
+          <th>نرخ (IQD)</th>
+          <th>نرخ ($)</th>
+          <th>بەسەرچوون</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="invBody"></tbody>
+    </table>
+    <p class="empty-note" id="invEmptyNote" style="display:none;">هیچ دەرمانێک تۆمار نەکراوە — لە سەرەوە زیادی بکە</p>
+  </section>
+
+  <!-- HISTORY TAB -->
+  <section class="panel" id="panel-history">
+    <h2>مێژووی فرۆشتنەکان</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>کات و بەروار</th>
+          <th>دەرمانەکان</th>
+          <th>کۆی IQD</th>
+          <th>کۆی $</th>
+        </tr>
+      </thead>
+      <tbody id="historyBody"></tbody>
+    </table>
+    <p class="empty-note" id="historyEmptyNote" style="display:none;">هێشتا هیچ فرۆشتنێک تۆمار نەکراوە</p>
+  </section>
+
+  <!-- ACCOUNTS TAB (admin only) -->
+  <section class="panel" id="panel-accounts">
+    <h2>دروستکردنی هەژماری ئەندام</h2>
+    <div class="field-row" style="align-items:flex-end;">
+      <div class="field" style="flex:1;">
+        <label>ناوی بەکارهێنەر</label>
+        <input type="text" id="newMemberUsername" placeholder="ناوی بەکارهێنەر" autocomplete="off">
+      </div>
+      <div class="field" style="flex:1;">
+        <label>وشەی نهێنی</label>
+        <input type="password" id="newMemberPassword" placeholder="وشەی نهێنی" autocomplete="new-password">
+      </div>
+      <button class="btn-primary" id="createMemberBtn">+ دروستکردن</button>
+    </div>
+    <p class="auth-error" id="accountsError" style="text-align:right;"></p>
+
+    <h2 style="margin-top:26px;">هەژمارە ئەندامەکان</h2>
+    <div id="membersList"></div>
+    <p class="empty-note" id="membersEmptyNote" style="display:none;">هیچ ئەندامێک دروست نەکراوە</p>
+  </section>
+
+</main>
+
+</div><!-- /appRoot -->
+
+<!-- ADD/EDIT MEDICINE MODAL -->
+<div class="modal-bg" id="medicineModalBg">
+  <div class="modal">
+    <h3 id="medicineModalTitle">زیادکردنی دەرمانی نوێ</h3>
+    <div class="field">
+      <label>بارکۆد</label>
+      <div class="field-row">
+        <input type="text" id="fBarcode" placeholder="ژمارەی بارکۆد">
+        <button class="btn-amber btn-sm" id="openScannerForm">📷 سکان</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>ناوی دەرمان</label>
+      <input type="text" id="fName" placeholder="ناوی دەرمان">
+    </div>
+    <div class="field">
+      <label>عددی بەردەست لە کۆگا</label>
+      <input type="number" id="fQty" placeholder="0" min="0">
+    </div>
+    <div class="field-row">
+      <div class="field" style="flex:1;">
+        <label>نرخ بە دینار (IQD)</label>
+        <input type="number" id="fPriceIQD" placeholder="0" min="0">
+      </div>
+      <div class="field" style="flex:1;">
+        <label>نرخ بە دۆلار ($)</label>
+        <input type="number" id="fPriceUSD" placeholder="0" min="0" step="0.01">
+      </div>
+    </div>
+    <div class="field">
+      <label>بەرواری بەسەرچوون</label>
+      <input type="date" id="fExpiry">
+    </div>
+    <div class="row" style="justify-content:flex-end; margin-top:8px;">
+      <button class="btn-ghost" id="cancelMedicineModal">پاشگەزبوونەوە</button>
+      <button class="btn-danger" id="deleteMedicineBtn" style="display:none;">سڕینەوە</button>
+      <button class="btn-primary" id="saveMedicineBtn">پاشەکەوتکردن</button>
+    </div>
+  </div>
+</div>
+
+<!-- SCANNER MODAL -->
+<div class="modal-bg" id="scannerModalBg">
+  <div class="modal" style="max-width:520px;">
+    <h3>سکانکردنی بارکۆد</h3>
+    <div id="scanner-video-wrap"></div>
+    <p style="font-size:13px; color:var(--ink-dim); margin-top:10px;">کامێراکە بەرەو بارکۆدەکە ڕابگرە تا خۆکار بناسرێتەوە.</p>
+    <div class="row" style="justify-content:flex-end; margin-top:14px;">
+      <button class="btn-ghost" id="closeScannerBtn">داخستن</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  const STORAGE_KEY = 'darmanxana_data_v1';
+  const SESSION_KEY = 'darmanxana_session_v1';
+
+  let state = {
+    medicines: [], // {barcode, name, qty, priceIQD, priceUSD, expiry}
+    sales: [],     // {time, items:[{barcode,name,qty,priceIQD,priceUSD}], totalIQD, totalUSD}
+    users: []      // {username, passwordHash, role: 'admin' | 'member'}
+  };
+
+  let cart = []; // {barcode, name, qty, priceIQD, priceUSD, stockQty}
+  let editingBarcode = null; // when set, medicine modal is in edit mode
+  let scannerTarget = null;  // 'sell' or 'form'
+  let currentUser = null;    // {username, role}
+
+  // ---------- persistence ----------
+  function load() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        state.medicines = parsed.medicines || [];
+        state.sales = parsed.sales || [];
+        state.users = parsed.users || [];
+      }
+    } catch (e) { console.error('load error', e); }
+  }
+  function save() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) { console.error('save error', e); }
+  }
+
+  // ---------- auth ----------
+  async function hashPassword(pw) {
+    const enc = new TextEncoder().encode(pw);
+    const buf = await crypto.subtle.digest('SHA-256', enc);
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  function findUser(username) {
+    return state.users.find(u => u.username.toLowerCase() === username.toLowerCase());
+  }
+
+  function isAdmin() {
+    return currentUser && currentUser.role === 'admin';
+  }
+
+  function applyRolePermissions() {
+    const admin = isAdmin();
+    document.getElementById('accountsTabBtn').style.display = admin ? '' : 'none';
+    document.getElementById('openAddModal').style.display = admin ? '' : 'none';
+    document.querySelectorAll('#invBody button[data-barcode]').forEach(b => {
+      b.style.display = admin ? '' : 'none';
+    });
+    document.getElementById('currentUserLabel').textContent =
+      currentUser.username + ' · ' + (admin ? 'بەڕێوەبەر' : 'ئەندام');
+
+    // if a member is somehow sitting on the accounts tab, bounce them to sell
+    if (!admin && document.getElementById('panel-accounts').classList.contains('active')) {
+      document.querySelector('.tab-btn[data-tab="sell"]').click();
+    }
+  }
+
+  function enterApp() {
+    document.getElementById('setupBg').classList.remove('show');
+    document.getElementById('loginBg').classList.remove('show');
+    document.getElementById('appRoot').style.display = 'block';
+    applyRolePermissions();
+    renderCart();
+    renderInventory();
+    renderHistory();
+    renderMembers();
+  }
+
+  function startSession(username) {
+    currentUser = { username: findUser(username).username, role: findUser(username).role };
+    try { sessionStorage.setItem(SESSION_KEY, currentUser.username); } catch (e) {}
+    enterApp();
+  }
+
+  function initAuth() {
+    if (!state.users.length) {
+      document.getElementById('setupBg').classList.add('show');
+      return;
+    }
+    let savedUsername = null;
+    try { savedUsername = sessionStorage.getItem(SESSION_KEY); } catch (e) {}
+    if (savedUsername && findUser(savedUsername)) {
+      startSession(savedUsername);
+    } else {
+      document.getElementById('loginBg').classList.add('show');
+    }
+  }
+
+  document.getElementById('setupSubmitBtn').addEventListener('click', async () => {
+    const username = document.getElementById('setupUsername').value.trim();
+    const pw = document.getElementById('setupPassword').value;
+    const pw2 = document.getElementById('setupPassword2').value;
+    const errEl = document.getElementById('setupError');
+    errEl.style.display = 'none';
+    if (!username || !pw) { errEl.textContent = 'تکایە هەموو خانەکان پڕبکەرەوە'; errEl.style.display = 'block'; return; }
+    if (pw !== pw2) { errEl.textContent = 'وشەی نهێنی وەک یەک نییە'; errEl.style.display = 'block'; return; }
+    const passwordHash = await hashPassword(pw);
+    state.users.push({ username, passwordHash, role: 'admin' });
+    save();
+    startSession(username);
+  });
+
+  document.getElementById('loginSubmitBtn').addEventListener('click', async () => {
+    const username = document.getElementById('loginUsername').value.trim();
+    const pw = document.getElementById('loginPassword').value;
+    const errEl = document.getElementById('loginError');
+    errEl.style.display = 'none';
+    const user = findUser(username);
+    if (!user) { errEl.textContent = 'ناوی بەکارهێنەر یان وشەی نهێنی هەڵەیە'; errEl.style.display = 'block'; return; }
+    const pwHash = await hashPassword(pw);
+    if (pwHash !== user.passwordHash) { errEl.textContent = 'ناوی بەکارهێنەر یان وشەی نهێنی هەڵەیە'; errEl.style.display = 'block'; return; }
+    document.getElementById('loginUsername').value = '';
+    document.getElementById('loginPassword').value = '';
+    startSession(username);
+  });
+
+  ['loginUsername','loginPassword'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') document.getElementById('loginSubmitBtn').click();
+    });
+  });
+  ['setupUsername','setupPassword','setupPassword2'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') document.getElementById('setupSubmitBtn').click();
+    });
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    try { sessionStorage.removeItem(SESSION_KEY); } catch (e) {}
+    currentUser = null;
+    document.getElementById('appRoot').style.display = 'none';
+    document.getElementById('loginBg').classList.add('show');
+  });
+
+  // ---------- helpers ----------
+  function fmt(n) {
+    n = Number(n) || 0;
+    return n.toLocaleString('en-US');
+  }
+  function fmtUSD(n) {
+    n = Number(n) || 0;
+    return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  function todayStr() {
+    return new Date().toISOString().slice(0,10);
+  }
+  function daysUntil(dateStr) {
+    if (!dateStr) return null;
+    const d = new Date(dateStr + 'T00:00:00');
+    const now = new Date();
+    now.setHours(0,0,0,0);
+    return Math.round((d - now) / 86400000);
+  }
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove('show'), 2200);
+  }
+  function findMedicine(barcode) {
+    return state.medicines.find(m => m.barcode === barcode);
+  }
+
+  // ---------- tabs ----------
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+      if (btn.dataset.tab === 'inventory') renderInventory();
+      if (btn.dataset.tab === 'history') renderHistory();
+      if (btn.dataset.tab === 'accounts') { if (!isAdmin()) return; renderMembers(); }
+    });
+  });
+
+  // ---------- SELL TAB ----------
+  const sellBarcodeInput = document.getElementById('sellBarcodeInput');
+  const cartBody = document.getElementById('cartBody');
+  const cartEmptyNote = document.getElementById('cartEmptyNote');
+
+  sellBarcodeInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addBarcodeToCart(sellBarcodeInput.value.trim());
+      sellBarcodeInput.value = '';
+    }
+  });
+
+  function addBarcodeToCart(barcode) {
+    if (!barcode) return;
+    const med = findMedicine(barcode);
+    if (!med) {
+      showToast('دەرمانی بەم بارکۆدە نەدۆزرایەوە: ' + barcode);
+      return;
+    }
+    const existing = cart.find(c => c.barcode === barcode);
+    const inCartQty = existing ? existing.qty : 0;
+    if (inCartQty + 1 > med.qty) {
+      showToast('عددی بەردەست لە کۆگا تەواوبووە بۆ ' + med.name);
+      return;
+    }
+    if (existing) {
+      existing.qty += 1;
+    } else {
+      cart.push({ barcode: med.barcode, name: med.name, qty: 1, priceIQD: med.priceIQD, priceUSD: med.priceUSD, stockQty: med.qty });
+    }
+    renderCart();
+  }
+
+  function renderCart() {
+    cartBody.innerHTML = '';
+    cartEmptyNote.style.display = cart.length ? 'none' : 'block';
+    let totalIQD = 0, totalUSD = 0;
+    cart.forEach((item, idx) => {
+      const lineIQD = item.qty * item.priceIQD;
+      const lineUSD = item.qty * item.priceUSD;
+      totalIQD += lineIQD;
+      totalUSD += lineUSD;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${escapeHtml(item.name)}</td>
+        <td>${escapeHtml(item.barcode)}</td>
+        <td>
+          <div class="row" style="gap:4px;">
+            <button class="btn-ghost btn-sm" data-act="dec" data-idx="${idx}">−</button>
+            <span>${item.qty}</span>
+            <button class="btn-ghost btn-sm" data-act="inc" data-idx="${idx}">+</button>
+          </div>
+        </td>
+        <td>${fmt(item.priceIQD)}</td>
+        <td>${fmtUSD(item.priceUSD)}</td>
+        <td>${fmt(lineIQD)} د.ع / $${fmtUSD(lineUSD)}</td>
+        <td><button class="btn-danger btn-sm" data-act="remove" data-idx="${idx}">سڕینەوە</button></td>
+      `;
+      cartBody.appendChild(tr);
+    });
+    document.getElementById('totalIQD').textContent = fmt(totalIQD);
+    document.getElementById('totalUSD').textContent = '$' + fmtUSD(totalUSD);
+  }
+
+  cartBody.addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    const idx = parseInt(btn.dataset.idx, 10);
+    const item = cart[idx];
+    if (!item) return;
+    if (btn.dataset.act === 'inc') {
+      if (item.qty + 1 > item.stockQty) { showToast('عددی بەردەست لە کۆگا تەواوبووە'); return; }
+      item.qty++;
+    } else if (btn.dataset.act === 'dec') {
+      item.qty--;
+      if (item.qty <= 0) cart.splice(idx, 1);
+    } else if (btn.dataset.act === 'remove') {
+      cart.splice(idx, 1);
+    }
+    renderCart();
+  });
+
+  document.getElementById('clearCartBtn').addEventListener('click', () => {
+    cart = [];
+    renderCart();
+  });
+
+  document.getElementById('checkoutBtn').addEventListener('click', () => {
+    if (!cart.length) { showToast('سەبەتەکە بەتاڵە'); return; }
+    // deduct stock
+    let totalIQD = 0, totalUSD = 0;
+    const saleItems = [];
+    for (const item of cart) {
+      const med = findMedicine(item.barcode);
+      if (!med || med.qty < item.qty) {
+        showToast('کێشەیەک هەیە لە بەردەستبوونی ' + item.name);
+        return;
+      }
+    }
+    cart.forEach(item => {
+      const med = findMedicine(item.barcode);
+      med.qty -= item.qty;
+      totalIQD += item.qty * item.priceIQD;
+      totalUSD += item.qty * item.priceUSD;
+      saleItems.push({ barcode: item.barcode, name: item.name, qty: item.qty, priceIQD: item.priceIQD, priceUSD: item.priceUSD });
+    });
+    state.sales.unshift({ time: new Date().toISOString(), items: saleItems, totalIQD, totalUSD });
+    if (state.sales.length > 300) state.sales.length = 300;
+    save();
+    cart = [];
+    renderCart();
+    showToast('فرۆشتنەکە تەواوبوو ✔');
+  });
+
+  const sellNameInput = document.getElementById('sellNameInput');
+  const sellNameSuggest = document.getElementById('sellNameSuggest');
+  let suggestHl = -1;
+
+  function renderSuggestions() {
+    const q = sellNameInput.value.trim().toLowerCase();
+    if (!q) {
+      sellNameSuggest.classList.remove('show');
+      sellNameSuggest.innerHTML = '';
+      return;
+    }
+    const matches = state.medicines
+      .filter(m => m.name.toLowerCase().includes(q))
+      .sort((a,b) => a.name.localeCompare(b.name, 'ar'))
+      .slice(0, 8);
+
+    suggestHl = -1;
+    if (!matches.length) {
+      sellNameSuggest.innerHTML = '<div class="suggest-empty">هیچ دەرمانێک بەم ناوە نەدۆزرایەوە</div>';
+      sellNameSuggest.classList.add('show');
+      return;
+    }
+    sellNameSuggest.innerHTML = matches.map(m => {
+      const out = m.qty <= 0 ? '<span class="s-out">کۆگا تەواوبووە</span>' : `<span class="s-meta">عدد: ${m.qty} · ${fmt(m.priceIQD)} د.ع</span>`;
+      return `<div class="suggest-item" data-barcode="${escapeHtml(m.barcode)}">
+        <span class="s-name">${escapeHtml(m.name)}</span>
+        ${out}
+      </div>`;
+    }).join('');
+    sellNameSuggest.classList.add('show');
+  }
+
+  sellNameInput.addEventListener('input', renderSuggestions);
+  sellNameInput.addEventListener('focus', renderSuggestions);
+
+  sellNameSuggest.addEventListener('click', (e) => {
+    const item = e.target.closest('.suggest-item[data-barcode]');
+    if (!item) return;
+    addBarcodeToCart(item.dataset.barcode);
+    sellNameInput.value = '';
+    sellNameSuggest.classList.remove('show');
+    sellNameInput.focus();
+  });
+
+  sellNameInput.addEventListener('keydown', (e) => {
+    const items = Array.from(sellNameSuggest.querySelectorAll('.suggest-item[data-barcode]'));
+    if (!items.length) return;
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      suggestHl = Math.min(suggestHl + 1, items.length - 1);
+      items.forEach((it, i) => it.classList.toggle('active-hl', i === suggestHl));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      suggestHl = Math.max(suggestHl - 1, 0);
+      items.forEach((it, i) => it.classList.toggle('active-hl', i === suggestHl));
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      const target = suggestHl >= 0 ? items[suggestHl] : items[0];
+      if (target) {
+        addBarcodeToCart(target.dataset.barcode);
+        sellNameInput.value = '';
+        sellNameSuggest.classList.remove('show');
+      }
+    } else if (e.key === 'Escape') {
+      sellNameSuggest.classList.remove('show');
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('#sellNameInput') && !e.target.closest('#sellNameSuggest')) {
+      sellNameSuggest.classList.remove('show');
+    }
+  });
+
+  // ---------- INVENTORY TAB ----------
+  const invBody = document.getElementById('invBody');
+  const invEmptyNote = document.getElementById('invEmptyNote');
+  const invSearch = document.getElementById('invSearch');
+
+  function renderInventory() {
+    const q = invSearch.value.trim().toLowerCase();
+    const list = state.medicines.filter(m =>
+      !q || m.name.toLowerCase().includes(q) || m.barcode.toLowerCase().includes(q)
+    ).sort((a,b) => a.name.localeCompare(b.name, 'ar'));
+
+    invBody.innerHTML = '';
+    invEmptyNote.style.display = list.length ? 'none' : 'block';
+
+    list.forEach(m => {
+      const dLeft = daysUntil(m.expiry);
+      let rowClass = '';
+      let tag = '';
+      if (dLeft !== null) {
+        if (dLeft < 0) { rowClass = 'danger-expiry'; tag = '<span class="tag tag-danger">بەسەرچووە</span>'; }
+        else if (dLeft <= 30) { rowClass = 'warn-expiry'; tag = '<span class="tag tag-warn">' + dLeft + ' ڕۆژ ماوە</span>'; }
+        else { tag = '<span class="tag tag-ok">' + m.expiry + '</span>'; }
+      }
+      const lowStock = m.qty <= 10;
+      const tr = document.createElement('tr');
+      tr.className = rowClass + (lowStock ? ' low-stock' : '');
+      tr.innerHTML = `
+        <td>${escapeHtml(m.name)}</td>
+        <td>${escapeHtml(m.barcode)}</td>
+        <td class="qty-cell">${m.qty}${lowStock ? ' <span class="tag tag-danger">کەم</span>' : ''}</td>
+        <td>${fmt(m.priceIQD)}</td>
+        <td>$${fmtUSD(m.priceUSD)}</td>
+        <td>${tag}</td>
+        <td><button class="btn-ghost btn-sm" data-barcode="${escapeHtml(m.barcode)}">دەستکاری</button></td>
+      `;
+      invBody.appendChild(tr);
+    });
+
+    if (!isAdmin()) {
+      document.querySelectorAll('#invBody button[data-barcode]').forEach(b => b.style.display = 'none');
+    }
+  }
+
+  invSearch.addEventListener('input', renderInventory);
+
+  invBody.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-barcode]');
+    if (!btn || !isAdmin()) return;
+    openMedicineModal(btn.dataset.barcode);
+  });
+
+  // ---------- HISTORY TAB ----------
+  const historyBody = document.getElementById('historyBody');
+  const historyEmptyNote = document.getElementById('historyEmptyNote');
+
+  function renderHistory() {
+    historyBody.innerHTML = '';
+    historyEmptyNote.style.display = state.sales.length ? 'none' : 'block';
+    state.sales.forEach(sale => {
+      const dt = new Date(sale.time);
+      const dateStr = dt.toLocaleString('en-GB', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+      const itemsStr = sale.items.map(i => `${i.name} ×${i.qty}`).join('، ');
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${dateStr}</td>
+        <td>${escapeHtml(itemsStr)}</td>
+        <td>${fmt(sale.totalIQD)}</td>
+        <td>$${fmtUSD(sale.totalUSD)}</td>
+      `;
+      historyBody.appendChild(tr);
+    });
+  }
+
+  // ---------- ADD/EDIT MEDICINE MODAL ----------
+  const medicineModalBg = document.getElementById('medicineModalBg');
+  const fBarcode = document.getElementById('fBarcode');
+  const fName = document.getElementById('fName');
+  const fQty = document.getElementById('fQty');
+  const fPriceIQD = document.getElementById('fPriceIQD');
+  const fPriceUSD = document.getElementById('fPriceUSD');
+  const fExpiry = document.getElementById('fExpiry');
+  const deleteMedicineBtn = document.getElementById('deleteMedicineBtn');
+
+  function openMedicineModal(barcode) {
+    editingBarcode = barcode || null;
+    if (barcode) {
+      const m = findMedicine(barcode);
+      document.getElementById('medicineModalTitle').textContent = 'دەستکاریکردنی دەرمان';
+      fBarcode.value = m.barcode;
+      fBarcode.disabled = true;
+      fName.value = m.name;
+      fQty.value = m.qty;
+      fPriceIQD.value = m.priceIQD;
+      fPriceUSD.value = m.priceUSD;
+      fExpiry.value = m.expiry || '';
+      deleteMedicineBtn.style.display = 'inline-block';
+    } else {
+      document.getElementById('medicineModalTitle').textContent = 'زیادکردنی دەرمانی نوێ';
+      fBarcode.value = '';
+      fBarcode.disabled = false;
+      fName.value = '';
+      fQty.value = '';
+      fPriceIQD.value = '';
+      fPriceUSD.value = '';
+      fExpiry.value = '';
+      deleteMedicineBtn.style.display = 'none';
+    }
+    medicineModalBg.classList.add('show');
+  }
+
+  document.getElementById('openAddModal').addEventListener('click', () => {
+    if (!isAdmin()) return;
+    openMedicineModal(null);
+  });
+  document.getElementById('cancelMedicineModal').addEventListener('click', () => medicineModalBg.classList.remove('show'));
+
+  document.getElementById('saveMedicineBtn').addEventListener('click', () => {
+    if (!isAdmin()) return;
+    const barcode = fBarcode.value.trim();
+    const name = fName.value.trim();
+    const qty = parseInt(fQty.value, 10) || 0;
+    const priceIQD = parseFloat(fPriceIQD.value) || 0;
+    const priceUSD = parseFloat(fPriceUSD.value) || 0;
+    const expiry = fExpiry.value || '';
+
+    if (!barcode || !name) {
+      showToast('تکایە بارکۆد و ناوی دەرمان پڕبکەرەوە');
+      return;
+    }
+    if (!editingBarcode && findMedicine(barcode)) {
+      showToast('ئەم بارکۆدە پێشتر تۆمارکراوە');
+      return;
+    }
+
+    if (editingBarcode) {
+      const m = findMedicine(editingBarcode);
+      m.name = name; m.qty = qty; m.priceIQD = priceIQD; m.priceUSD = priceUSD; m.expiry = expiry;
+    } else {
+      state.medicines.push({ barcode, name, qty, priceIQD, priceUSD, expiry });
+    }
+    save();
+    medicineModalBg.classList.remove('show');
+    renderInventory();
+    showToast('پاشەکەوتکرا ✔');
+  });
+
+  deleteMedicineBtn.addEventListener('click', () => {
+    if (!isAdmin() || !editingBarcode) return;
+    if (!confirm('دڵنیایت لە سڕینەوەی ئەم دەرمانە؟')) return;
+    state.medicines = state.medicines.filter(m => m.barcode !== editingBarcode);
+    save();
+    medicineModalBg.classList.remove('show');
+    renderInventory();
+    showToast('سڕایەوە');
+  });
+
+  // ---------- SCANNER ----------
+  const scannerModalBg = document.getElementById('scannerModalBg');
+  const scannerWrap = document.getElementById('scanner-video-wrap');
+  let quaggaRunning = false;
+
+  function openScanner(target) {
+    scannerTarget = target;
+    scannerModalBg.classList.add('show');
+    startQuagga();
+  }
+
+  function startQuagga() {
+    if (typeof Quagga === 'undefined') {
+      showToast('کتێبخانەی سکانکردن بارنەبووە — پەیوەندیی ئینتەرنێت پشکنین بکە');
+      return;
+    }
+    Quagga.init({
+      inputStream: {
+        name: 'Live',
+        type: 'LiveStream',
+        target: scannerWrap,
+        constraints: { facingMode: 'environment' }
+      },
+      decoder: {
+        readers: ['ean_reader', 'ean_8_reader', 'code_128_reader', 'upc_reader', 'upc_e_reader', 'code_39_reader']
+      },
+      locate: true
+    }, function (err) {
+      if (err) {
+        console.error(err);
+        showToast('کامێرا نەکرایەوە — ڕێگە بدە بۆ کامێرا یان بارکۆدەکە بە دەستی بنووسە');
+        return;
+      }
+      Quagga.start();
+      quaggaRunning = true;
+    });
+
+    Quagga.offDetected();
+    Quagga.onDetected(function (result) {
+      const code = result && result.codeResult && result.codeResult.code;
+      if (!code) return;
+      handleScanResult(code);
+    });
+  }
+
+  function stopQuagga() {
+    if (quaggaRunning && typeof Quagga !== 'undefined') {
+      Quagga.stop();
+      quaggaRunning = false;
+    }
+    scannerWrap.innerHTML = '';
+  }
+
+  function handleScanResult(code) {
+    stopQuagga();
+    scannerModalBg.classList.remove('show');
+    if (scannerTarget === 'sell') {
+      addBarcodeToCart(code);
+    } else if (scannerTarget === 'form') {
+      fBarcode.value = code;
+    }
+    showToast('بارکۆد ناسرایەوە: ' + code);
+  }
+
+  document.getElementById('openScannerSell').addEventListener('click', () => openScanner('sell'));
+  document.getElementById('openScannerForm').addEventListener('click', () => openScanner('form'));
+  document.getElementById('closeScannerBtn').addEventListener('click', () => {
+    stopQuagga();
+    scannerModalBg.classList.remove('show');
+  });
+
+  // ---------- ACCOUNTS TAB (admin only) ----------
+  const membersList = document.getElementById('membersList');
+  const membersEmptyNote = document.getElementById('membersEmptyNote');
+  const accountsError = document.getElementById('accountsError');
+
+  function renderMembers() {
+    const members = state.users.filter(u => u.role === 'member');
+    membersList.innerHTML = '';
+    membersEmptyNote.style.display = members.length ? 'none' : 'block';
+    members.forEach(u => {
+      const row = document.createElement('div');
+      row.className = 'account-row';
+      row.innerHTML = `
+        <span>${escapeHtml(u.username)} <span class="tag tag-ok">ئەندام</span></span>
+        <button class="btn-danger btn-sm" data-username="${escapeHtml(u.username)}">سڕینەوە</button>
+      `;
+      membersList.appendChild(row);
+    });
+  }
+
+  document.getElementById('createMemberBtn').addEventListener('click', async () => {
+    if (!isAdmin()) return;
+    accountsError.style.display = 'none';
+    const username = document.getElementById('newMemberUsername').value.trim();
+    const pw = document.getElementById('newMemberPassword').value;
+    if (!username || !pw) {
+      accountsError.textContent = 'تکایە ناوی بەکارهێنەر و وشەی نهێنی پڕبکەرەوە';
+      accountsError.style.display = 'block';
+      return;
+    }
+    if (findUser(username)) {
+      accountsError.textContent = 'ئەم ناوی بەکارهێنەرە پێشتر بەکارهاتووە';
+      accountsError.style.display = 'block';
+      return;
+    }
+    const passwordHash = await hashPassword(pw);
+    state.users.push({ username, passwordHash, role: 'member' });
+    save();
+    document.getElementById('newMemberUsername').value = '';
+    document.getElementById('newMemberPassword').value = '';
+    renderMembers();
+    showToast('هەژماری ئەندام دروستکرا ✔');
+  });
+
+  membersList.addEventListener('click', (e) => {
+    if (!isAdmin()) return;
+    const btn = e.target.closest('button[data-username]');
+    if (!btn) return;
+    if (!confirm('دڵنیایت لە سڕینەوەی ئەم ئەندامە؟')) return;
+    state.users = state.users.filter(u => u.username !== btn.dataset.username);
+    save();
+    renderMembers();
+  });
+
+  // ---------- misc ----------
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  // ---------- init ----------
+  load();
+  initAuth();
+})();
+</script>
+</body>
+</html>
