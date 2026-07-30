@@ -6,6 +6,8 @@
 <title>سیستەمی دەرمانخانە</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;700&family=Noto+Sans+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js" onerror="window.__fbLoadFailed = true;"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-database-compat.js" onerror="window.__fbLoadFailed = true;"></script>
 <style>
   :root {
     --bg: #F3F1EA;
@@ -443,6 +445,14 @@
 </head>
 <body>
 
+<!-- LOADING / SYNC GATE -->
+<div class="auth-bg" id="loadingBg" style="display:flex;">
+  <div class="auth-card">
+    <h2>پەیوەندیکردن بە بنکەدراوە...</h2>
+    <p class="auth-sub">تکایە چاوەڕێبە، سیستەمەکە خۆی هاوئاهەنگ دەکات لەگەڵ داتای هاوبەش.</p>
+  </div>
+</div>
+
 <!-- FIRST-RUN: CREATE ADMIN ACCOUNT -->
 <div class="auth-bg" id="setupBg">
   <div class="auth-card">
@@ -681,6 +691,30 @@
   const STORAGE_KEY = 'darmanxana_data_v1';
   const SESSION_KEY = 'darmanxana_session_v1';
 
+  // ---------- Firebase (shared data across every device) ----------
+  const firebaseConfig = {
+    apiKey: "AIzaSyBUOpr62OK5DUjzAmrajoB9jVevt7ipPd4",
+    authDomain: "darmanxana-7b64c.firebaseapp.com",
+    databaseURL: "https://darmanxana-7b64c-default-rtdb.firebaseio.com",
+    projectId: "darmanxana-7b64c",
+    storageBucket: "darmanxana-7b64c.firebasestorage.app",
+    messagingSenderId: "437809284296",
+    appId: "1:437809284296:web:5ac155692bfff981bcd1fd"
+  };
+
+  let dataRef = null;
+  let firebaseOk = false;
+  try {
+    if (typeof firebase === 'undefined' || window.__fbLoadFailed) {
+      throw new Error('Firebase SDK did not load');
+    }
+    firebase.initializeApp(firebaseConfig);
+    dataRef = firebase.database().ref('darmanxana_data');
+    firebaseOk = true;
+  } catch (e) {
+    console.error('firebase init failed, continuing in local-only mode', e);
+  }
+
   let state = {
     medicines: [], // {barcode, name, qty, priceIQD, priceUSD, expiry}
     sales: [],     // {time, items:[{barcode,name,qty,priceIQD,priceUSD}], totalIQD, totalUSD}
@@ -691,9 +725,11 @@
   let editingBarcode = null; // when set, medicine modal is in edit mode
   let scannerTarget = null;  // 'sell' or 'form'
   let currentUser = null;    // {username, role}
+  let appEntered = false;
+  let gateOpened = false;
 
   // ---------- persistence ----------
-  function load() {
+  function loadLocalCache() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
@@ -702,12 +738,47 @@
         state.sales = parsed.sales || [];
         state.users = parsed.users || [];
       }
-    } catch (e) { console.error('load error', e); }
+    } catch (e) { console.error('local cache read error', e); }
   }
+
+  function cacheLocally() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+
   function save() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    } catch (e) { console.error('save error', e); }
+    cacheLocally(); // instant local copy so the UI never waits on the network
+    dataRef.set(state).catch(err => {
+      console.error('firebase save error', err);
+      showToast('نەتوانرا بنێردرێت بۆ ئینتەرنێت — پەیوەندی ئینتەرنێتەکەت پشکنین بکە');
+    });
+  }
+
+  function openGateOnce() {
+    if (gateOpened) return;
+    gateOpened = true;
+    document.getElementById('loadingBg').style.display = 'none';
+    initAuth();
+  }
+
+  function startRealtimeSync() {
+    dataRef.on('value', (snapshot) => {
+      const val = snapshot.val();
+      if (val) {
+        state.medicines = val.medicines || [];
+        state.sales = val.sales || [];
+        state.users = val.users || [];
+      }
+      cacheLocally();
+      openGateOnce();
+      if (appEntered) {
+        renderInventory();
+        renderHistory();
+        renderMembers();
+      }
+    }, (err) => {
+      console.error('firebase read error', err);
+      openGateOnce(); // fall back to whatever is cached locally
+    });
   }
 
   // ---------- auth ----------
@@ -742,6 +813,7 @@
   }
 
   function enterApp() {
+    appEntered = true;
     document.getElementById('setupBg').classList.remove('show');
     document.getElementById('loginBg').classList.remove('show');
     document.getElementById('appRoot').style.display = 'block';
@@ -814,6 +886,7 @@
   document.getElementById('logoutBtn').addEventListener('click', () => {
     try { sessionStorage.removeItem(SESSION_KEY); } catch (e) {}
     currentUser = null;
+    appEntered = false;
     document.getElementById('appRoot').style.display = 'none';
     document.getElementById('loginBg').classList.add('show');
   });
@@ -1341,8 +1414,9 @@
   }
 
   // ---------- init ----------
-  load();
-  initAuth();
+  loadLocalCache();
+  startRealtimeSync();
+  setTimeout(openGateOnce, 4000); // if the network is slow, proceed with the local cache anyway
 })();
 </script>
 </body>
