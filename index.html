@@ -199,6 +199,8 @@
   .tag-danger { background: var(--danger); color: #fff; }
   .tag-warn { background: var(--amber); color: #fff; }
   .tag-ok { background: var(--ok); color: #fff; }
+  .tag-cat { background: var(--teal); color: #fff; }
+  .tag-perm { background: #E9E5D8; color: var(--ink-dim); }
 
   .cart-box {
     border: 1px solid var(--border);
@@ -265,6 +267,26 @@
 
   .field-row { display: flex; gap: 8px; }
   .field-row input { flex: 1; }
+
+  .perm-box {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #FBFAF6;
+  }
+
+  .perm-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+  }
+
+  .perm-item input { width: 17px; height: 17px; padding: 0; cursor: pointer; }
+  .perm-item label { cursor: pointer; }
 
   #scanner-video-wrap {
     position: relative;
@@ -432,8 +454,22 @@
     justify-content: space-between;
     padding: 12px 4px;
     border-bottom: 1px solid var(--border);
+    gap: 10px;
+    flex-wrap: wrap;
   }
   .account-row:last-child { border-bottom: none; }
+  .account-row .perm-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .account-row .acc-actions { display: flex; gap: 6px; }
+
+  #receiptArea { display: none; }
+
+  @media print {
+    body.printing-receipt > *:not(#receiptArea) { display: none !important; }
+    body.printing-receipt #receiptArea {
+      display: block !important;
+      direction: rtl;
+    }
+  }
 
   @media (max-width: 640px) {
     header { flex-direction: column; align-items: flex-start; }
@@ -510,9 +546,9 @@
 </header>
 
 <nav>
-  <button class="tab-btn active" data-tab="sell">فرۆشتن</button>
-  <button class="tab-btn" data-tab="inventory">کۆگا</button>
-  <button class="tab-btn" data-tab="history">مێژووی فرۆشتن</button>
+  <button class="tab-btn active" data-tab="sell" id="sellTabBtn">فرۆشتن</button>
+  <button class="tab-btn" data-tab="inventory" id="inventoryTabBtn">کۆگا</button>
+  <button class="tab-btn" data-tab="history" id="historyTabBtn">مێژووی فرۆشتن</button>
   <button class="tab-btn" data-tab="accounts" id="accountsTabBtn" style="display:none;">هەژمارەکان</button>
 </nav>
 
@@ -525,6 +561,7 @@
       <input type="text" id="sellBarcodeInput" placeholder="بارکۆد بنووسە یان سکانی بکە و Enter بکە" style="flex:1; min-width:220px;">
       <button class="btn-amber" id="openScannerSell">📷 کردنەوەی کامێرا</button>
     </div>
+    <p style="font-size:12px; color:var(--ink-dim); margin-top:6px;">تێبینی: ئامێری سکانەری بارکۆدی USB/دەستی خۆکار کاردەکات — تەنها بارکۆدەکە سکان بکە لە هەر شوێنێکی سیستەمەکە، خۆی بارکۆدەکە دەناسێتەوە و زیادی دەکات.</p>
 
     <div class="row" style="margin-top:10px; position:relative;">
       <div style="flex:1; min-width:220px; position:relative;">
@@ -551,7 +588,27 @@
       <p class="empty-note" id="cartEmptyNote">سەبەتەکە بەتاڵە — بارکۆدێک بنووسە بۆ زیادکردنی دەرمان</p>
     </div>
 
-    <div class="totals">
+    <div class="row" id="discountBox" style="display:none; margin-top:14px; align-items:flex-end;">
+      <div class="field" style="min-width:130px;">
+        <label>جۆری داشکاندن</label>
+        <select id="discountType">
+          <option value="percent">ڕێژەیی (%)</option>
+          <option value="amount">بڕی دیاریکراو (IQD)</option>
+        </select>
+      </div>
+      <div class="field" style="min-width:130px;">
+        <label>بڕی داشکاندن</label>
+        <input type="number" id="discountValue" placeholder="0" min="0" value="0">
+      </div>
+      <div class="field" style="min-width:160px;">
+        <label>هۆکاری داشکاندن (ئارەزوومەندانە)</label>
+        <input type="text" id="discountReason" placeholder="نموونە: نەخۆشی دەستان تەنگە">
+      </div>
+    </div>
+
+    <div class="totals" id="totalsBox">
+      <div id="subtotalRow" style="display:none;">کۆی پێش داشکاندن: <span id="subtotalIQD">0</span> د.ع / $<span id="subtotalUSD">0</span></div>
+      <div id="discountRow" style="display:none; color:var(--danger);">داشکاندن: <span id="discountAmountIQD">0</span> د.ع / $<span id="discountAmountUSD">0</span></div>
       <div>کۆی گشتی (دینار): <span class="val" id="totalIQD">0</span></div>
       <div>کۆی گشتی ($): <span class="val" id="totalUSD">0</span></div>
     </div>
@@ -569,6 +626,9 @@
       <div class="search-wrap">
         <input type="text" id="invSearch" placeholder="گەڕان بە ناو یان بارکۆد...">
       </div>
+      <select id="invCategoryFilter" style="min-width:160px;">
+        <option value="">هەموو جۆرەکان</option>
+      </select>
       <button class="btn-primary" id="openAddModal">+ زیادکردنی دەرمانی نوێ</button>
     </div>
 
@@ -576,6 +636,7 @@
       <thead>
         <tr>
           <th>ناوی دەرمان</th>
+          <th>جۆر</th>
           <th>بارکۆد</th>
           <th>عدد لە کۆگا</th>
           <th>نرخ (IQD)</th>
@@ -599,6 +660,7 @@
           <th>دەرمانەکان</th>
           <th>کۆی IQD</th>
           <th>کۆی $</th>
+          <th></th>
         </tr>
       </thead>
       <tbody id="historyBody"></tbody>
@@ -606,19 +668,26 @@
     <p class="empty-note" id="historyEmptyNote" style="display:none;">هێشتا هیچ فرۆشتنێک تۆمار نەکراوە</p>
   </section>
 
-  <!-- ACCOUNTS TAB (admin only) -->
+  <!-- ACCOUNTS TAB (admin / permission-managed) -->
   <section class="panel" id="panel-accounts">
-    <h2>دروستکردنی هەژماری ئەندام</h2>
-    <div class="field-row" style="align-items:flex-end;">
-      <div class="field" style="flex:1;">
+    <h2 id="memberFormTitle">دروستکردنی هەژماری ئەندام</h2>
+    <div class="row" style="align-items:flex-start;">
+      <div class="field" style="flex:1; min-width:180px;">
         <label>ناوی بەکارهێنەر</label>
         <input type="text" id="newMemberUsername" placeholder="ناوی بەکارهێنەر" autocomplete="off">
       </div>
-      <div class="field" style="flex:1;">
+      <div class="field" style="flex:1; min-width:180px;">
         <label>وشەی نهێنی</label>
-        <input type="password" id="newMemberPassword" placeholder="وشەی نهێنی" autocomplete="new-password">
+        <input type="password" id="newMemberPassword" placeholder="وشەی نهێنی (بۆ دەستکاری بەتاڵی بهێڵەرەوە)" autocomplete="new-password">
       </div>
+    </div>
+    <div class="field">
+      <label>مۆڵەتەکان (چ کارێک ئەم ئەندامە دەتوانێت بیکات)</label>
+      <div class="perm-box" id="permCheckboxBox"></div>
+    </div>
+    <div class="row" style="margin-top:6px;">
       <button class="btn-primary" id="createMemberBtn">+ دروستکردن</button>
+      <button class="btn-ghost" id="cancelEditMemberBtn" style="display:none;">پاشگەزبوونەوە لە دەستکاری</button>
     </div>
     <p class="auth-error" id="accountsError" style="text-align:right;"></p>
 
@@ -645,6 +714,11 @@
     <div class="field">
       <label>ناوی دەرمان</label>
       <input type="text" id="fName" placeholder="ناوی دەرمان">
+    </div>
+    <div class="field">
+      <label>جۆری دەرمان</label>
+      <input type="text" id="fCategory" placeholder="نموونە: دژە ئازار، دژە هەستەرگی، ڤیتامین..." list="categoryList">
+      <datalist id="categoryList"></datalist>
     </div>
     <div class="field">
       <label>عددی بەردەست لە کۆگا</label>
@@ -686,6 +760,8 @@
 
 <div class="toast" id="toast"></div>
 
+<div id="receiptArea"></div>
+
 <script>
 (function () {
   const STORAGE_KEY = 'darmanxana_data_v1';
@@ -715,16 +791,30 @@
     console.error('firebase init failed, continuing in local-only mode', e);
   }
 
+  // ---------- permissions ----------
+  const PERMISSIONS = [
+    { key: 'sell',            label: 'فرۆشتن (زیادکردنی دەرمان بۆ سەبەتە و تەواوکردنی فرۆشتن)' },
+    { key: 'inventory_view',  label: 'بینینی کۆگا' },
+    { key: 'inventory_edit',  label: 'زیادکردن و دەستکاریکردنی دەرمان لە کۆگا' },
+    { key: 'inventory_delete',label: 'سڕینەوەی دەرمان لە کۆگا' },
+    { key: 'history_view',    label: 'بینینی مێژووی فرۆشتن' },
+    { key: 'apply_discount',  label: 'دانانی داشکاندن لەکاتی فرۆشتن' },
+    { key: 'accounts_manage', label: 'بەڕێوەبردنی هەژمارەکان' }
+  ];
+  const ALL_PERMISSION_KEYS = PERMISSIONS.map(p => p.key);
+
   let state = {
-    medicines: [], // {barcode, name, qty, priceIQD, priceUSD, expiry}
+    medicines: [], // {barcode, name, category, qty, priceIQD, priceUSD, expiry}
     sales: [],     // {time, items:[{barcode,name,qty,priceIQD,priceUSD}], totalIQD, totalUSD}
-    users: []      // {username, passwordHash, role: 'admin' | 'member'}
+    users: [],     // {username, passwordHash, role: 'admin' | 'member', permissions: [keys]}
+    categories: [] // ["دژە ئازار", ...]
   };
 
   let cart = []; // {barcode, name, qty, priceIQD, priceUSD, stockQty}
   let editingBarcode = null; // when set, medicine modal is in edit mode
+  let editingMemberUsername = null; // when set, accounts form is in edit mode
   let scannerTarget = null;  // 'sell' or 'form'
-  let currentUser = null;    // {username, role}
+  let currentUser = null;    // {username, role, permissions}
   let appEntered = false;
   let gateOpened = false;
 
@@ -737,6 +827,7 @@
         state.medicines = parsed.medicines || [];
         state.sales = parsed.sales || [];
         state.users = parsed.users || [];
+        state.categories = parsed.categories || [];
       }
     } catch (e) { console.error('local cache read error', e); }
   }
@@ -747,6 +838,7 @@
 
   function save() {
     cacheLocally(); // instant local copy so the UI never waits on the network
+    if (!firebaseOk || !dataRef) return; // offline / no cloud db — local cache is already saved
     dataRef.set(state).catch(err => {
       console.error('firebase save error', err);
       showToast('نەتوانرا بنێردرێت بۆ ئینتەرنێت — پەیوەندی ئینتەرنێتەکەت پشکنین بکە');
@@ -761,12 +853,19 @@
   }
 
   function startRealtimeSync() {
+    if (!firebaseOk || !dataRef) {
+      // Cloud database unreachable (no internet, blocked, ad-blocker, etc).
+      // Don't crash — just proceed with whatever is cached locally on this device.
+      openGateOnce();
+      return;
+    }
     dataRef.on('value', (snapshot) => {
       const val = snapshot.val();
       if (val) {
         state.medicines = val.medicines || [];
         state.sales = val.sales || [];
         state.users = val.users || [];
+        state.categories = val.categories || [];
       }
       cacheLocally();
       openGateOnce();
@@ -796,20 +895,36 @@
     return currentUser && currentUser.role === 'admin';
   }
 
+  function hasPermission(key) {
+    if (!currentUser) return false;
+    if (currentUser.role === 'admin') return true;
+    return Array.isArray(currentUser.permissions) && currentUser.permissions.includes(key);
+  }
+
   function applyRolePermissions() {
     const admin = isAdmin();
-    document.getElementById('accountsTabBtn').style.display = admin ? '' : 'none';
-    document.getElementById('openAddModal').style.display = admin ? '' : 'none';
-    document.querySelectorAll('#invBody button[data-barcode]').forEach(b => {
-      b.style.display = admin ? '' : 'none';
-    });
+
+    // tabs
+    document.getElementById('sellTabBtn').style.display = hasPermission('sell') ? '' : 'none';
+    document.getElementById('inventoryTabBtn').style.display = hasPermission('inventory_view') ? '' : 'none';
+    document.getElementById('historyTabBtn').style.display = hasPermission('history_view') ? '' : 'none';
+    document.getElementById('accountsTabBtn').style.display = hasPermission('accounts_manage') ? '' : 'none';
+
+    // inventory buttons
+    document.getElementById('openAddModal').style.display = hasPermission('inventory_edit') ? '' : 'none';
+    document.getElementById('discountBox').style.display = hasPermission('apply_discount') ? 'flex' : 'none';
+
     document.getElementById('currentUserLabel').textContent =
       currentUser.username + ' · ' + (admin ? 'بەڕێوەبەر' : 'ئەندام');
 
-    // if a member is somehow sitting on the accounts tab, bounce them to sell
-    if (!admin && document.getElementById('panel-accounts').classList.contains('active')) {
-      document.querySelector('.tab-btn[data-tab="sell"]').click();
+    // bounce user off a tab they no longer have access to
+    const activeTab = document.querySelector('.tab-btn.active');
+    if (activeTab && activeTab.style.display === 'none') {
+      const firstVisible = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.style.display !== 'none');
+      if (firstVisible) firstVisible.click();
     }
+
+    renderInventory();
   }
 
   function enterApp() {
@@ -822,10 +937,13 @@
     renderInventory();
     renderHistory();
     renderMembers();
+    renderCategoryFilterOptions();
+    renderCategoryDatalist();
   }
 
   function startSession(username) {
-    currentUser = { username: findUser(username).username, role: findUser(username).role };
+    const u = findUser(username);
+    currentUser = { username: u.username, role: u.role, permissions: u.permissions || [] };
     try { sessionStorage.setItem(SESSION_KEY, currentUser.username); } catch (e) {}
     enterApp();
   }
@@ -853,7 +971,7 @@
     if (!username || !pw) { errEl.textContent = 'تکایە هەموو خانەکان پڕبکەرەوە'; errEl.style.display = 'block'; return; }
     if (pw !== pw2) { errEl.textContent = 'وشەی نهێنی وەک یەک نییە'; errEl.style.display = 'block'; return; }
     const passwordHash = await hashPassword(pw);
-    state.users.push({ username, passwordHash, role: 'admin' });
+    state.users.push({ username, passwordHash, role: 'admin', permissions: ALL_PERMISSION_KEYS.slice() });
     save();
     startSession(username);
   });
@@ -920,6 +1038,13 @@
   function findMedicine(barcode) {
     return state.medicines.find(m => m.barcode === barcode);
   }
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
 
   // ---------- tabs ----------
   document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -930,7 +1055,7 @@
       document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
       if (btn.dataset.tab === 'inventory') renderInventory();
       if (btn.dataset.tab === 'history') renderHistory();
-      if (btn.dataset.tab === 'accounts') { if (!isAdmin()) return; renderMembers(); }
+      if (btn.dataset.tab === 'accounts') { if (!hasPermission('accounts_manage')) return; renderMembers(); resetMemberForm(); }
     });
   });
 
@@ -949,6 +1074,7 @@
 
   function addBarcodeToCart(barcode) {
     if (!barcode) return;
+    if (!hasPermission('sell')) { showToast('مۆڵەتی فرۆشتنت نییە'); return; }
     const med = findMedicine(barcode);
     if (!med) {
       showToast('دەرمانی بەم بارکۆدە نەدۆزرایەوە: ' + barcode);
@@ -968,15 +1094,45 @@
     renderCart();
   }
 
+  function getDiscountInputs() {
+    if (!hasPermission('apply_discount')) return { type: 'percent', value: 0, reason: '' };
+    const type = document.getElementById('discountType').value === 'amount' ? 'amount' : 'percent';
+    let value = parseFloat(document.getElementById('discountValue').value) || 0;
+    if (value < 0) value = 0;
+    if (type === 'percent' && value > 100) value = 100;
+    const reason = document.getElementById('discountReason').value.trim();
+    return { type, value, reason };
+  }
+
+  function computeCartTotals() {
+    let subtotalIQD = 0, subtotalUSD = 0;
+    cart.forEach(item => {
+      subtotalIQD += item.qty * item.priceIQD;
+      subtotalUSD += item.qty * item.priceUSD;
+    });
+    const disc = getDiscountInputs();
+    let discountIQD = 0, discountUSD = 0;
+    if (disc.value > 0) {
+      if (disc.type === 'percent') {
+        discountIQD = subtotalIQD * (disc.value / 100);
+        discountUSD = subtotalUSD * (disc.value / 100);
+      } else {
+        // fixed amount is entered in IQD; convert proportionally for the USD side
+        discountIQD = Math.min(disc.value, subtotalIQD);
+        discountUSD = subtotalIQD > 0 ? subtotalUSD * (discountIQD / subtotalIQD) : 0;
+      }
+    }
+    const finalIQD = Math.max(0, subtotalIQD - discountIQD);
+    const finalUSD = Math.max(0, subtotalUSD - discountUSD);
+    return { subtotalIQD, subtotalUSD, discountIQD, discountUSD, finalIQD, finalUSD, disc };
+  }
+
   function renderCart() {
     cartBody.innerHTML = '';
     cartEmptyNote.style.display = cart.length ? 'none' : 'block';
-    let totalIQD = 0, totalUSD = 0;
     cart.forEach((item, idx) => {
       const lineIQD = item.qty * item.priceIQD;
       const lineUSD = item.qty * item.priceUSD;
-      totalIQD += lineIQD;
-      totalUSD += lineUSD;
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>${escapeHtml(item.name)}</td>
@@ -995,9 +1151,25 @@
       `;
       cartBody.appendChild(tr);
     });
-    document.getElementById('totalIQD').textContent = fmt(totalIQD);
-    document.getElementById('totalUSD').textContent = '$' + fmtUSD(totalUSD);
+
+    const t = computeCartTotals();
+    const hasDiscount = hasPermission('apply_discount') && t.discountIQD > 0;
+    document.getElementById('subtotalRow').style.display = hasDiscount ? '' : 'none';
+    document.getElementById('discountRow').style.display = hasDiscount ? '' : 'none';
+    if (hasDiscount) {
+      document.getElementById('subtotalIQD').textContent = fmt(t.subtotalIQD);
+      document.getElementById('subtotalUSD').textContent = fmtUSD(t.subtotalUSD);
+      document.getElementById('discountAmountIQD').textContent = fmt(t.discountIQD);
+      document.getElementById('discountAmountUSD').textContent = fmtUSD(t.discountUSD);
+    }
+    document.getElementById('totalIQD').textContent = fmt(t.finalIQD);
+    document.getElementById('totalUSD').textContent = '$' + fmtUSD(t.finalUSD);
   }
+
+  ['discountType', 'discountValue', 'discountReason'].forEach(id => {
+    document.getElementById(id).addEventListener('input', renderCart);
+    document.getElementById(id).addEventListener('change', renderCart);
+  });
 
   cartBody.addEventListener('click', (e) => {
     const btn = e.target.closest('button');
@@ -1023,9 +1195,9 @@
   });
 
   document.getElementById('checkoutBtn').addEventListener('click', () => {
+    if (!hasPermission('sell')) { showToast('مۆڵەتی فرۆشتنت نییە'); return; }
     if (!cart.length) { showToast('سەبەتەکە بەتاڵە'); return; }
     // deduct stock
-    let totalIQD = 0, totalUSD = 0;
     const saleItems = [];
     for (const item of cart) {
       const med = findMedicine(item.barcode);
@@ -1034,19 +1206,36 @@
         return;
       }
     }
+    const t = computeCartTotals();
     cart.forEach(item => {
       const med = findMedicine(item.barcode);
       med.qty -= item.qty;
-      totalIQD += item.qty * item.priceIQD;
-      totalUSD += item.qty * item.priceUSD;
       saleItems.push({ barcode: item.barcode, name: item.name, qty: item.qty, priceIQD: item.priceIQD, priceUSD: item.priceUSD });
     });
-    state.sales.unshift({ time: new Date().toISOString(), items: saleItems, totalIQD, totalUSD });
+    const sale = {
+      time: new Date().toISOString(),
+      items: saleItems,
+      subtotalIQD: t.subtotalIQD,
+      subtotalUSD: t.subtotalUSD,
+      discountIQD: t.discountIQD,
+      discountUSD: t.discountUSD,
+      discountType: t.disc.type,
+      discountValue: t.disc.value,
+      discountReason: t.disc.reason,
+      totalIQD: t.finalIQD,
+      totalUSD: t.finalUSD
+    };
+    state.sales.unshift(sale);
     if (state.sales.length > 300) state.sales.length = 300;
     save();
     cart = [];
+    if (hasPermission('apply_discount')) {
+      document.getElementById('discountValue').value = 0;
+      document.getElementById('discountReason').value = '';
+    }
     renderCart();
     showToast('فرۆشتنەکە تەواوبوو ✔');
+    printReceipt(sale);
   });
 
   const sellNameInput = document.getElementById('sellNameInput');
@@ -1072,7 +1261,7 @@
       return;
     }
     sellNameSuggest.innerHTML = matches.map(m => {
-      const out = m.qty <= 0 ? '<span class="s-out">کۆگا تەواوبووە</span>' : `<span class="s-meta">عدد: ${m.qty} · ${fmt(m.priceIQD)} د.ع</span>`;
+      const out = m.qty <= 0 ? '<span class="s-out">کۆگا تەواوبووە</span>' : `<span class="s-meta">عدد: ${m.qty} · ${fmt(m.priceIQD)} د.ع${m.category ? ' · ' + escapeHtml(m.category) : ''}</span>`;
       return `<div class="suggest-item" data-barcode="${escapeHtml(m.barcode)}">
         <span class="s-name">${escapeHtml(m.name)}</span>
         ${out}
@@ -1123,19 +1312,47 @@
     }
   });
 
+  // ---------- CATEGORIES ----------
+  function collectCategories() {
+    const set = new Set(state.categories || []);
+    state.medicines.forEach(m => { if (m.category) set.add(m.category); });
+    return Array.from(set).sort((a,b) => a.localeCompare(b, 'ar'));
+  }
+
+  function renderCategoryDatalist() {
+    const list = collectCategories();
+    document.getElementById('categoryList').innerHTML = list.map(c => `<option value="${escapeHtml(c)}"></option>`).join('');
+  }
+
+  function renderCategoryFilterOptions() {
+    const list = collectCategories();
+    const sel = document.getElementById('invCategoryFilter');
+    const prevVal = sel.value;
+    sel.innerHTML = '<option value="">هەموو جۆرەکان</option>' + list.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+    if (list.includes(prevVal)) sel.value = prevVal;
+  }
+
+  document.getElementById('invCategoryFilter').addEventListener('change', renderInventory);
+
   // ---------- INVENTORY TAB ----------
   const invBody = document.getElementById('invBody');
   const invEmptyNote = document.getElementById('invEmptyNote');
   const invSearch = document.getElementById('invSearch');
 
   function renderInventory() {
+    if (!currentUser) return;
     const q = invSearch.value.trim().toLowerCase();
+    const catFilter = document.getElementById('invCategoryFilter').value;
     const list = state.medicines.filter(m =>
-      !q || m.name.toLowerCase().includes(q) || m.barcode.toLowerCase().includes(q)
+      (!q || m.name.toLowerCase().includes(q) || m.barcode.toLowerCase().includes(q)) &&
+      (!catFilter || m.category === catFilter)
     ).sort((a,b) => a.name.localeCompare(b.name, 'ar'));
 
     invBody.innerHTML = '';
     invEmptyNote.style.display = list.length ? 'none' : 'block';
+
+    const canEdit = hasPermission('inventory_edit');
+    const canDelete = hasPermission('inventory_delete');
 
     list.forEach(m => {
       const dLeft = daysUntil(m.expiry);
@@ -1151,26 +1368,23 @@
       tr.className = rowClass + (lowStock ? ' low-stock' : '');
       tr.innerHTML = `
         <td>${escapeHtml(m.name)}</td>
+        <td>${m.category ? '<span class="tag tag-cat">' + escapeHtml(m.category) + '</span>' : ''}</td>
         <td>${escapeHtml(m.barcode)}</td>
         <td class="qty-cell">${m.qty}${lowStock ? ' <span class="tag tag-danger">کەم</span>' : ''}</td>
         <td>${fmt(m.priceIQD)}</td>
         <td>$${fmtUSD(m.priceUSD)}</td>
         <td>${tag}</td>
-        <td><button class="btn-ghost btn-sm" data-barcode="${escapeHtml(m.barcode)}">دەستکاری</button></td>
+        <td>${canEdit ? `<button class="btn-ghost btn-sm" data-barcode="${escapeHtml(m.barcode)}">دەستکاری</button>` : ''}</td>
       `;
       invBody.appendChild(tr);
     });
-
-    if (!isAdmin()) {
-      document.querySelectorAll('#invBody button[data-barcode]').forEach(b => b.style.display = 'none');
-    }
   }
 
   invSearch.addEventListener('input', renderInventory);
 
   invBody.addEventListener('click', (e) => {
     const btn = e.target.closest('button[data-barcode]');
-    if (!btn || !isAdmin()) return;
+    if (!btn || !hasPermission('inventory_edit')) return;
     openMedicineModal(btn.dataset.barcode);
   });
 
@@ -1181,25 +1395,85 @@
   function renderHistory() {
     historyBody.innerHTML = '';
     historyEmptyNote.style.display = state.sales.length ? 'none' : 'block';
-    state.sales.forEach(sale => {
+    state.sales.forEach((sale, idx) => {
       const dt = new Date(sale.time);
       const dateStr = dt.toLocaleString('en-GB', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
       const itemsStr = sale.items.map(i => `${i.name} ×${i.qty}`).join('، ');
+      const discTag = sale.discountIQD > 0 ? ` <span class="tag tag-warn">داشکاندن: ${fmt(sale.discountIQD)}</span>` : '';
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>${dateStr}</td>
         <td>${escapeHtml(itemsStr)}</td>
-        <td>${fmt(sale.totalIQD)}</td>
+        <td>${fmt(sale.totalIQD)}${discTag}</td>
         <td>$${fmtUSD(sale.totalUSD)}</td>
+        <td><button class="btn-ghost btn-sm" data-sale-idx="${idx}">🖨️ چاپکردنەوە</button></td>
       `;
       historyBody.appendChild(tr);
     });
+  }
+
+  historyBody.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-sale-idx]');
+    if (!btn) return;
+    const sale = state.sales[parseInt(btn.dataset.saleIdx, 10)];
+    if (sale) printReceipt(sale);
+  });
+
+  // ---------- RECEIPT PRINTING ----------
+  function buildReceiptHtml(sale) {
+    const dt = new Date(sale.time);
+    const dateStr = dt.toLocaleString('en-GB', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+    const rows = sale.items.map(i => `
+      <tr>
+        <td style="padding:4px 2px; border-bottom:1px dashed #ccc;">${escapeHtml(i.name)}</td>
+        <td style="padding:4px 2px; border-bottom:1px dashed #ccc; text-align:center;">${i.qty}</td>
+        <td style="padding:4px 2px; border-bottom:1px dashed #ccc; text-align:left;">${fmt(i.priceIQD)}</td>
+        <td style="padding:4px 2px; border-bottom:1px dashed #ccc; text-align:left;">${fmt(i.qty * i.priceIQD)}</td>
+      </tr>
+    `).join('');
+    return `
+      <div style="font-family:'Noto Kufi Arabic','Noto Sans Arabic',sans-serif; direction:rtl; padding:16px; max-width:340px; margin:0 auto; color:#111;">
+        <h2 style="text-align:center; font-size:18px; margin-bottom:4px;">سیستەمی دەرمانخانە</h2>
+        <p style="text-align:center; font-size:11px; color:#555; margin-bottom:10px;">${dateStr}</p>
+        <hr style="border:none; border-top:1px solid #999; margin:8px 0;">
+        <table style="width:100%; font-size:12px; border-collapse:collapse;">
+          <thead>
+            <tr>
+              <th style="text-align:right; padding:4px 2px;">دەرمان</th>
+              <th style="text-align:center; padding:4px 2px;">عدد</th>
+              <th style="text-align:left; padding:4px 2px;">نرخ</th>
+              <th style="text-align:left; padding:4px 2px;">کۆ</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+        <hr style="border:none; border-top:1px solid #999; margin:10px 0;">
+        ${sale.discountIQD > 0 ? `
+        <p style="text-align:left; font-size:12px; color:#555;">کۆی پێش داشکاندن: ${fmt(sale.subtotalIQD)} د.ع / $${fmtUSD(sale.subtotalUSD)}</p>
+        <p style="text-align:left; font-size:12px; color:#a33;">داشکاندن${sale.discountReason ? ' (' + escapeHtml(sale.discountReason) + ')' : ''}: -${fmt(sale.discountIQD)} د.ع / -$${fmtUSD(sale.discountUSD)}</p>
+        ` : ''}
+        <p style="text-align:left; font-weight:bold; font-size:14px;">کۆی گشتی: ${fmt(sale.totalIQD)} د.ع</p>
+        <p style="text-align:left; font-weight:bold; font-size:14px;">کۆی گشتی: $${fmtUSD(sale.totalUSD)}</p>
+        <p style="text-align:center; font-size:11px; color:#555; margin-top:14px;">سوپاس بۆ متمانەتان 🌿</p>
+      </div>
+    `;
+  }
+
+  function printReceipt(sale) {
+    const area = document.getElementById('receiptArea');
+    area.innerHTML = buildReceiptHtml(sale);
+    document.body.classList.add('printing-receipt');
+    setTimeout(() => {
+      window.print();
+      setTimeout(() => document.body.classList.remove('printing-receipt'), 300);
+    }, 60);
   }
 
   // ---------- ADD/EDIT MEDICINE MODAL ----------
   const medicineModalBg = document.getElementById('medicineModalBg');
   const fBarcode = document.getElementById('fBarcode');
   const fName = document.getElementById('fName');
+  const fCategory = document.getElementById('fCategory');
   const fQty = document.getElementById('fQty');
   const fPriceIQD = document.getElementById('fPriceIQD');
   const fPriceUSD = document.getElementById('fPriceUSD');
@@ -1207,23 +1481,27 @@
   const deleteMedicineBtn = document.getElementById('deleteMedicineBtn');
 
   function openMedicineModal(barcode) {
+    if (!hasPermission('inventory_edit')) return;
     editingBarcode = barcode || null;
+    renderCategoryDatalist();
     if (barcode) {
       const m = findMedicine(barcode);
       document.getElementById('medicineModalTitle').textContent = 'دەستکاریکردنی دەرمان';
       fBarcode.value = m.barcode;
       fBarcode.disabled = true;
       fName.value = m.name;
+      fCategory.value = m.category || '';
       fQty.value = m.qty;
       fPriceIQD.value = m.priceIQD;
       fPriceUSD.value = m.priceUSD;
       fExpiry.value = m.expiry || '';
-      deleteMedicineBtn.style.display = 'inline-block';
+      deleteMedicineBtn.style.display = hasPermission('inventory_delete') ? 'inline-block' : 'none';
     } else {
       document.getElementById('medicineModalTitle').textContent = 'زیادکردنی دەرمانی نوێ';
       fBarcode.value = '';
       fBarcode.disabled = false;
       fName.value = '';
+      fCategory.value = '';
       fQty.value = '';
       fPriceIQD.value = '';
       fPriceUSD.value = '';
@@ -1234,15 +1512,16 @@
   }
 
   document.getElementById('openAddModal').addEventListener('click', () => {
-    if (!isAdmin()) return;
+    if (!hasPermission('inventory_edit')) return;
     openMedicineModal(null);
   });
   document.getElementById('cancelMedicineModal').addEventListener('click', () => medicineModalBg.classList.remove('show'));
 
   document.getElementById('saveMedicineBtn').addEventListener('click', () => {
-    if (!isAdmin()) return;
+    if (!hasPermission('inventory_edit')) return;
     const barcode = fBarcode.value.trim();
     const name = fName.value.trim();
+    const category = fCategory.value.trim();
     const qty = parseInt(fQty.value, 10) || 0;
     const priceIQD = parseFloat(fPriceIQD.value) || 0;
     const priceUSD = parseFloat(fPriceUSD.value) || 0;
@@ -1259,27 +1538,33 @@
 
     if (editingBarcode) {
       const m = findMedicine(editingBarcode);
-      m.name = name; m.qty = qty; m.priceIQD = priceIQD; m.priceUSD = priceUSD; m.expiry = expiry;
+      m.name = name; m.category = category; m.qty = qty; m.priceIQD = priceIQD; m.priceUSD = priceUSD; m.expiry = expiry;
     } else {
-      state.medicines.push({ barcode, name, qty, priceIQD, priceUSD, expiry });
+      state.medicines.push({ barcode, name, category, qty, priceIQD, priceUSD, expiry });
+    }
+    if (category && !state.categories.includes(category)) {
+      state.categories.push(category);
     }
     save();
     medicineModalBg.classList.remove('show');
     renderInventory();
+    renderCategoryFilterOptions();
+    renderCategoryDatalist();
     showToast('پاشەکەوتکرا ✔');
   });
 
   deleteMedicineBtn.addEventListener('click', () => {
-    if (!isAdmin() || !editingBarcode) return;
+    if (!hasPermission('inventory_delete') || !editingBarcode) return;
     if (!confirm('دڵنیایت لە سڕینەوەی ئەم دەرمانە؟')) return;
     state.medicines = state.medicines.filter(m => m.barcode !== editingBarcode);
     save();
     medicineModalBg.classList.remove('show');
     renderInventory();
+    renderCategoryFilterOptions();
     showToast('سڕایەوە');
   });
 
-  // ---------- SCANNER ----------
+  // ---------- SCANNER (camera) ----------
   const scannerModalBg = document.getElementById('scannerModalBg');
   const scannerWrap = document.getElementById('scanner-video-wrap');
   let quaggaRunning = false;
@@ -1350,31 +1635,178 @@
     scannerModalBg.classList.remove('show');
   });
 
-  // ---------- ACCOUNTS TAB (admin only) ----------
+  // ---------- HARDWARE (USB/HID) BARCODE SCANNER SUPPORT ----------
+  // Most physical barcode scanners act like a keyboard: they "type" the barcode
+  // extremely fast (every character within a few milliseconds of the last one)
+  // and then send an Enter key. We detect that fast-typing pattern globally so
+  // scanning works no matter where the cursor currently is, without breaking
+  // normal human typing anywhere else in the app.
+  const SCAN_KEY_GAP_MS = 40;   // max gap between chars that still counts as "scanner speed"
+  const SCAN_MIN_LENGTH = 4;    // ignore very short bursts (accidental key mashing)
+  const HW_SCAN_IGNORE_IDS = ['sellBarcodeInput', 'fBarcode', 'loginUsername', 'loginPassword', 'setupUsername', 'setupPassword', 'setupPassword2', 'newMemberUsername', 'newMemberPassword'];
+
+  let hwScanBuffer = '';
+  let hwScanLastTime = 0;
+
+  document.addEventListener('keydown', (e) => {
+    const activeId = document.activeElement ? document.activeElement.id : '';
+    if (HW_SCAN_IGNORE_IDS.includes(activeId)) return; // these fields already have their own Enter handling
+
+    const now = Date.now();
+
+    if (e.key === 'Enter') {
+      const fastEnough = (now - hwScanLastTime) <= SCAN_KEY_GAP_MS;
+      const code = hwScanBuffer;
+      hwScanBuffer = '';
+      if (fastEnough && code.length >= SCAN_MIN_LENGTH) {
+        routeHardwareScan(code);
+      }
+      return;
+    }
+
+    if (e.key.length === 1) {
+      if (now - hwScanLastTime > SCAN_KEY_GAP_MS) {
+        hwScanBuffer = ''; // gap too long — this is normal human typing, restart buffer
+      }
+      hwScanBuffer += e.key;
+      hwScanLastTime = now;
+    }
+  });
+
+  function routeHardwareScan(code) {
+    if (!appEntered) return;
+    if (medicineModalBg.classList.contains('show')) {
+      if (hasPermission('inventory_edit')) {
+        fBarcode.value = code;
+        showToast('بارکۆد وەرگیرا: ' + code);
+      }
+      return;
+    }
+    if (scannerModalBg.classList.contains('show')) return;
+    if (!hasPermission('sell')) return;
+    addBarcodeToCart(code);
+    if (!document.getElementById('panel-sell').classList.contains('active')) {
+      document.getElementById('sellTabBtn').click();
+    }
+  }
+
+  // ---------- ACCOUNTS TAB (permission-managed) ----------
   const membersList = document.getElementById('membersList');
   const membersEmptyNote = document.getElementById('membersEmptyNote');
   const accountsError = document.getElementById('accountsError');
+  const permCheckboxBox = document.getElementById('permCheckboxBox');
+  const cancelEditMemberBtn = document.getElementById('cancelEditMemberBtn');
+
+  function renderPermCheckboxes(checkedKeys) {
+    checkedKeys = checkedKeys || [];
+    permCheckboxBox.innerHTML = PERMISSIONS.map(p => `
+      <div class="perm-item">
+        <input type="checkbox" id="perm_${p.key}" value="${p.key}" ${checkedKeys.includes(p.key) ? 'checked' : ''}>
+        <label for="perm_${p.key}">${p.label}</label>
+      </div>
+    `).join('');
+  }
+
+  function getCheckedPermissions() {
+    return PERMISSIONS
+      .filter(p => document.getElementById('perm_' + p.key) && document.getElementById('perm_' + p.key).checked)
+      .map(p => p.key);
+  }
+
+  function resetMemberForm() {
+    editingMemberUsername = null;
+    document.getElementById('memberFormTitle').textContent = 'دروستکردنی هەژماری ئەندام';
+    document.getElementById('newMemberUsername').value = '';
+    document.getElementById('newMemberUsername').disabled = false;
+    document.getElementById('newMemberPassword').value = '';
+    document.getElementById('newMemberPassword').placeholder = 'وشەی نهێنی';
+    document.getElementById('createMemberBtn').textContent = '+ دروستکردن';
+    cancelEditMemberBtn.style.display = 'none';
+    permCheckboxBox.style.display = '';
+    renderPermCheckboxes(['sell']);
+    accountsError.style.display = 'none';
+  }
 
   function renderMembers() {
-    const members = state.users.filter(u => u.role === 'member');
+    const users = state.users.slice().sort((a,b) => (a.role === b.role) ? 0 : (a.role === 'admin' ? -1 : 1));
     membersList.innerHTML = '';
-    membersEmptyNote.style.display = members.length ? 'none' : 'block';
-    members.forEach(u => {
+    membersEmptyNote.style.display = users.length ? 'none' : 'block';
+    const adminCount = state.users.filter(u => u.role === 'admin').length;
+    users.forEach(u => {
+      const isAdminRow = u.role === 'admin';
+      const permLabels = isAdminRow ? [] : (u.permissions || []).map(k => {
+        const p = PERMISSIONS.find(pp => pp.key === k);
+        return p ? p.label.split('(')[0].trim() : k;
+      });
+      const roleTag = isAdminRow ? '<span class="tag tag-cat">بەڕێوەبەر</span>' : '<span class="tag tag-ok">ئەندام</span>';
+      const permBlock = isAdminRow
+        ? '<div class="perm-tags"><span class="tag tag-perm">هەموو مۆڵەتەکانی هەیە</span></div>'
+        : `<div class="perm-tags">${permLabels.map(l => `<span class="tag tag-perm">${escapeHtml(l)}</span>`).join('') || '<span class="tag tag-perm">هیچ مۆڵەتێک نییە</span>'}</div>`;
+      const canDelete = !isAdminRow || adminCount > 1;
       const row = document.createElement('div');
       row.className = 'account-row';
       row.innerHTML = `
-        <span>${escapeHtml(u.username)} <span class="tag tag-ok">ئەندام</span></span>
-        <button class="btn-danger btn-sm" data-username="${escapeHtml(u.username)}">سڕینەوە</button>
+        <div>
+          <div><strong>${escapeHtml(u.username)}</strong> ${roleTag}</div>
+          ${permBlock}
+        </div>
+        <div class="acc-actions">
+          <button class="btn-ghost btn-sm" data-edit="${escapeHtml(u.username)}">دەستکاری ناو/وشەی نهێنی${isAdminRow ? '' : '/مۆڵەت'}</button>
+          ${canDelete ? `<button class="btn-danger btn-sm" data-username="${escapeHtml(u.username)}">سڕینەوە</button>` : ''}
+        </div>
       `;
       membersList.appendChild(row);
     });
   }
 
   document.getElementById('createMemberBtn').addEventListener('click', async () => {
-    if (!isAdmin()) return;
+    if (!hasPermission('accounts_manage')) return;
     accountsError.style.display = 'none';
     const username = document.getElementById('newMemberUsername').value.trim();
     const pw = document.getElementById('newMemberPassword').value;
+    const permissions = getCheckedPermissions();
+
+    if (editingMemberUsername) {
+      // editing an existing account's username / password / permissions
+      const u = findUser(editingMemberUsername);
+      if (!u) { resetMemberForm(); return; }
+
+      if (!username) {
+        accountsError.textContent = 'ناوی بەکارهێنەر ناتوانێت بەتاڵ بێت';
+        accountsError.style.display = 'block';
+        return;
+      }
+      if (username.toLowerCase() !== u.username.toLowerCase() && findUser(username)) {
+        accountsError.textContent = 'ئەم ناوی بەکارهێنەرە پێشتر بەکارهاتووە';
+        accountsError.style.display = 'block';
+        return;
+      }
+
+      const oldUsername = u.username;
+      u.username = username;
+      if (u.role === 'member') {
+        u.permissions = permissions;
+      }
+      if (pw) {
+        u.passwordHash = await hashPassword(pw);
+      }
+      save();
+
+      // if we just edited the account that's currently logged in, keep the session in sync
+      if (currentUser && currentUser.username.toLowerCase() === oldUsername.toLowerCase()) {
+        currentUser.username = u.username;
+        if (u.role === 'member') currentUser.permissions = u.permissions;
+        try { sessionStorage.setItem(SESSION_KEY, u.username); } catch (e) {}
+        document.getElementById('currentUserLabel').textContent =
+          currentUser.username + ' · ' + (isAdmin() ? 'بەڕێوەبەر' : 'ئەندام');
+      }
+
+      resetMemberForm();
+      renderMembers();
+      showToast('هەژمارەکە نوێکرایەوە ✔');
+      return;
+    }
+
     if (!username || !pw) {
       accountsError.textContent = 'تکایە ناوی بەکارهێنەر و وشەی نهێنی پڕبکەرەوە';
       accountsError.style.display = 'block';
@@ -1386,34 +1818,55 @@
       return;
     }
     const passwordHash = await hashPassword(pw);
-    state.users.push({ username, passwordHash, role: 'member' });
+    state.users.push({ username, passwordHash, role: 'member', permissions });
     save();
-    document.getElementById('newMemberUsername').value = '';
-    document.getElementById('newMemberPassword').value = '';
+    resetMemberForm();
     renderMembers();
     showToast('هەژماری ئەندام دروستکرا ✔');
   });
 
+  cancelEditMemberBtn.addEventListener('click', resetMemberForm);
+
   membersList.addEventListener('click', (e) => {
-    if (!isAdmin()) return;
-    const btn = e.target.closest('button[data-username]');
-    if (!btn) return;
-    if (!confirm('دڵنیایت لە سڕینەوەی ئەم ئەندامە؟')) return;
-    state.users = state.users.filter(u => u.username !== btn.dataset.username);
-    save();
-    renderMembers();
+    if (!hasPermission('accounts_manage')) return;
+    const delBtn = e.target.closest('button[data-username]');
+    if (delBtn) {
+      const target = findUser(delBtn.dataset.username);
+      if (target && target.role === 'admin' && state.users.filter(u => u.role === 'admin').length <= 1) {
+        showToast('ناتوانرێت دوایین هەژماری بەڕێوەبەر بسڕدرێتەوە');
+        return;
+      }
+      if (!confirm('دڵنیایت لە سڕینەوەی ئەم هەژمارە؟')) return;
+      state.users = state.users.filter(u => u.username !== delBtn.dataset.username);
+      if (editingMemberUsername === delBtn.dataset.username) resetMemberForm();
+      save();
+      renderMembers();
+      return;
+    }
+    const editBtn = e.target.closest('button[data-edit]');
+    if (editBtn) {
+      const u = findUser(editBtn.dataset.edit);
+      if (!u) return;
+      editingMemberUsername = u.username;
+      document.getElementById('memberFormTitle').textContent = 'دەستکاریکردنی هەژماری: ' + u.username;
+      document.getElementById('newMemberUsername').value = u.username;
+      document.getElementById('newMemberUsername').disabled = false;
+      document.getElementById('newMemberPassword').value = '';
+      document.getElementById('newMemberPassword').placeholder = 'وشەی نهێنی نوێ (بۆ گۆڕین — ئەگەرنا بەتاڵی بهێڵەرەوە)';
+      document.getElementById('createMemberBtn').textContent = 'نوێکردنەوە';
+      cancelEditMemberBtn.style.display = 'inline-block';
+      if (u.role === 'admin') {
+        permCheckboxBox.style.display = 'none';
+      } else {
+        permCheckboxBox.style.display = '';
+        renderPermCheckboxes(u.permissions || []);
+      }
+      window.scrollTo({ top: document.getElementById('panel-accounts').offsetTop - 20, behavior: 'smooth' });
+    }
   });
 
-  // ---------- misc ----------
-  function escapeHtml(str) {
-    return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
-  }
-
   // ---------- init ----------
+  renderPermCheckboxes(['sell']);
   loadLocalCache();
   startRealtimeSync();
   setTimeout(openGateOnce, 4000); // if the network is slow, proceed with the local cache anyway
