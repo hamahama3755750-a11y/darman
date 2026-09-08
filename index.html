@@ -10,18 +10,26 @@
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-database-compat.js" onerror="window.__fbLoadFailed = true;"></script>
 <style>
   :root {
-    --bg: #F3F1EA;
+    --bg: #EEF2FA;
     --panel: #FFFFFF;
-    --ink: #1F3A34;
-    --ink-dim: #5C6F69;
-    --teal: #146356;
-    --teal-deep: #0E4A40;
-    --amber: #D98E2B;
-    --amber-soft: #F4D9A8;
-    --danger: #C1443A;
-    --danger-soft: #F6D8D5;
-    --border: rgba(20, 58, 52, 0.14);
-    --ok: #3E8E4F;
+    --ink: #16213A;
+    --ink-dim: #626E8C;
+    --border: rgba(22, 33, 58, 0.10);
+    --ok: #1FAA59;
+
+    /* Section accent colors — each tab/module gets its own hue so the
+       interface reads as color-coded zones, not one flat brand color. */
+    --sell: #2F6FED;        --sell-deep: #1E52C2;        --sell-soft: #E3ECFE;
+    --inventory: #0EA894;   --inventory-deep: #0B8474;   --inventory-soft: #DDF5F1;
+    --history: #8B5CF6;     --history-deep: #6D3FDB;     --history-soft: #EEE7FE;
+    --accounts: #F2994A;    --accounts-deep: #D97B24;    --accounts-soft: #FDEBD6;
+
+    --teal: var(--inventory);
+    --teal-deep: var(--inventory-deep);
+    --amber: var(--accounts);
+    --amber-soft: var(--accounts-soft);
+    --danger: #E5484D;
+    --danger-soft: #FCE4E4;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -35,25 +43,43 @@
   }
 
   header {
-    background: var(--teal);
-    color: #F3F1EA;
+    background: linear-gradient(120deg, var(--sell-deep) 0%, var(--sell) 45%, var(--history) 100%);
+    color: #FFFFFF;
     padding: 20px 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 10px;
-    box-shadow: 0 4px 16px rgba(14,74,64,0.25);
+    box-shadow: 0 8px 24px rgba(30, 82, 194, 0.28);
+  }
+
+  header .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  header .brand .logo-badge {
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    background: rgba(255,255,255,0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 19px;
+    flex-shrink: 0;
   }
 
   header h1 {
     font-family: 'Noto Kufi Arabic', sans-serif;
-    font-size: 22px;
+    font-size: 21px;
   }
 
   header .rate {
     font-size: 13px;
-    color: var(--amber-soft);
+    color: #FFE9CE;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -70,8 +96,8 @@
 
   nav {
     display: flex;
-    gap: 8px;
-    padding: 16px 24px 0;
+    gap: 10px;
+    padding: 18px 24px 0;
     max-width: 1100px;
     margin: 0 auto;
     flex-wrap: wrap;
@@ -79,22 +105,30 @@
 
   .tab-btn {
     font-family: 'Noto Kufi Arabic', sans-serif;
-    font-size: 15px;
+    font-size: 14.5px;
     font-weight: 500;
-    padding: 11px 22px;
-    border-radius: 12px 12px 0 0;
+    padding: 12px 20px;
+    border-radius: 13px;
     border: 1px solid var(--border);
-    border-bottom: none;
-    background: #E9E5D8;
+    background: var(--panel);
     color: var(--ink-dim);
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 6px rgba(22,33,58,0.05);
   }
 
-  .tab-btn.active {
-    background: var(--panel);
-    color: var(--teal);
-    font-weight: 700;
+  .tab-btn .tab-icon {
+    font-size: 16px;
+    line-height: 1;
   }
+
+  .tab-btn[data-tab="sell"].active { background: var(--sell); border-color: var(--sell); color: #fff; box-shadow: 0 6px 16px rgba(47,111,237,0.35); }
+  .tab-btn[data-tab="inventory"].active { background: var(--inventory); border-color: var(--inventory); color: #fff; box-shadow: 0 6px 16px rgba(14,168,148,0.32); }
+  .tab-btn[data-tab="history"].active { background: var(--history); border-color: var(--history); color: #fff; box-shadow: 0 6px 16px rgba(139,92,246,0.32); }
+  .tab-btn[data-tab="accounts"].active { background: var(--accounts); border-color: var(--accounts); color: #fff; box-shadow: 0 6px 16px rgba(242,153,74,0.32); }
+  .tab-btn.active { font-weight: 700; }
 
   main {
     max-width: 1100px;
@@ -105,13 +139,19 @@
   .panel {
     background: var(--panel);
     border: 1px solid var(--border);
-    border-radius: 0 14px 14px 14px;
+    border-top: 4px solid var(--sell);
+    border-radius: 14px;
+    margin-top: 14px;
     padding: 24px;
     display: none;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+    box-shadow: 0 10px 32px rgba(22,33,58,0.06);
   }
 
   .panel.active { display: block; }
+
+  #panel-inventory { border-top-color: var(--inventory); }
+  #panel-history { border-top-color: var(--history); }
+  #panel-accounts { border-top-color: var(--accounts); }
 
   .row {
     display: flex;
@@ -124,8 +164,13 @@
     font-family: 'Noto Kufi Arabic', sans-serif;
     font-size: 19px;
     margin-bottom: 16px;
-    color: var(--teal-deep);
+    color: var(--ink);
   }
+
+  #panel-sell h2 { color: var(--sell-deep); }
+  #panel-inventory h2 { color: var(--inventory-deep); }
+  #panel-history h2 { color: var(--history-deep); }
+  #panel-accounts h2 { color: var(--accounts-deep); }
 
   input, select {
     font-family: 'Noto Sans Arabic', sans-serif;
@@ -155,13 +200,18 @@
 
   button:active { transform: scale(0.97); }
 
-  .btn-primary { background: var(--teal); color: #fff; }
-  .btn-primary:hover { background: var(--teal-deep); }
-  .btn-amber { background: var(--amber); color: #fff; }
-  .btn-amber:hover { background: #C17E1E; }
+  .btn-primary { background: var(--sell); color: #fff; }
+  .btn-primary:hover { background: var(--sell-deep); }
+  #panel-inventory .btn-primary { background: var(--inventory); }
+  #panel-inventory .btn-primary:hover { background: var(--inventory-deep); }
+  #panel-accounts .btn-primary { background: var(--accounts); }
+  #panel-accounts .btn-primary:hover { background: var(--accounts-deep); }
+  .btn-amber { background: var(--accounts); color: #fff; }
+  .btn-amber:hover { background: var(--accounts-deep); }
   .btn-danger { background: var(--danger); color: #fff; }
+  .btn-danger:hover { background: #C93338; }
   .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--ink-dim); }
-  .btn-ghost:hover { background: #F0EEE5; }
+  .btn-ghost:hover { background: var(--bg); }
   .btn-sm { padding: 7px 12px; font-size: 13px; }
 
   table {
@@ -197,10 +247,10 @@
   }
 
   .tag-danger { background: var(--danger); color: #fff; }
-  .tag-warn { background: var(--amber); color: #fff; }
+  .tag-warn { background: var(--accounts); color: #fff; }
   .tag-ok { background: var(--ok); color: #fff; }
-  .tag-cat { background: var(--teal); color: #fff; }
-  .tag-perm { background: #E9E5D8; color: var(--ink-dim); }
+  .tag-cat { background: var(--inventory); color: #fff; }
+  .tag-perm { background: var(--history-soft); color: var(--history-deep); }
 
   .cart-box {
     border: 1px solid var(--border);
@@ -212,14 +262,23 @@
   .totals {
     display: flex;
     justify-content: flex-end;
-    gap: 26px;
-    padding: 16px 20px;
-    background: #F3F1EA;
-    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 16px 4px 4px;
     font-family: 'Noto Kufi Arabic', sans-serif;
   }
 
-  .totals .val { color: var(--teal-deep); font-size: 19px; font-weight: 700; }
+  .totals > div {
+    background: var(--sell-soft);
+    color: var(--sell-deep);
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-size: 13px;
+  }
+
+  .totals #discountRow { background: var(--danger-soft); color: var(--danger); }
+
+  .totals .val { color: var(--sell-deep); font-size: 20px; font-weight: 700; }
 
   /* Modal */
   .modal-bg {
@@ -236,14 +295,17 @@
 
   .modal {
     background: var(--panel);
+    border-top: 5px solid var(--inventory);
     border-radius: 16px;
     padding: 26px;
     max-width: 480px;
     width: 100%;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    box-shadow: 0 20px 60px rgba(22,33,58,0.28);
   }
+
+  #scannerModalBg .modal { border-top-color: var(--sell); }
 
   .modal h3 {
     font-family: 'Noto Kufi Arabic', sans-serif;
@@ -307,7 +369,7 @@
     bottom: 26px;
     left: 50%;
     transform: translateX(-50%) translateY(20px);
-    background: var(--teal-deep);
+    background: var(--ink);
     color: #fff;
     padding: 12px 26px;
     border-radius: 999px;
@@ -393,18 +455,19 @@
   .auth-card {
     background: var(--panel);
     border: 1px solid var(--border);
+    border-top: 5px solid var(--sell);
     border-radius: 16px;
     padding: 32px 28px;
     max-width: 380px;
     width: 100%;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+    box-shadow: 0 20px 60px rgba(22,33,58,0.12);
     text-align: center;
   }
 
   .auth-card h2 {
     font-family: 'Noto Kufi Arabic', sans-serif;
     font-size: 19px;
-    color: var(--teal-deep);
+    color: var(--sell-deep);
     margin-bottom: 8px;
   }
 
@@ -492,7 +555,7 @@
 <!-- FIRST-RUN: CREATE ADMIN ACCOUNT -->
 <div class="auth-bg" id="setupBg">
   <div class="auth-card">
-    <h2>دروستکردنی هەژماری بەڕێوەبەر</h2>
+    <h2>⚕️ دروستکردنی هەژماری بەڕێوەبەر</h2>
     <p class="auth-sub">یەکەم جارە سیستەمەکە بەکاردەهێنیت. تکایە هەژمارێکی بەڕێوەبەر (ئەدمین) دروست بکە.</p>
     <p class="auth-error" id="setupError"></p>
     <div class="field">
@@ -514,7 +577,7 @@
 <!-- LOGIN GATE -->
 <div class="auth-bg" id="loginBg">
   <div class="auth-card">
-    <h2>چوونەژوورەوە</h2>
+    <h2>🔐 چوونەژوورەوە</h2>
     <p class="auth-sub">سیستەمی بەڕێوەبردنی دەرمانخانە</p>
     <p class="auth-error" id="loginError"></p>
     <div class="field">
@@ -532,7 +595,10 @@
 <div id="appRoot" style="display:none;">
 
 <header>
-  <h1>سیستەمی بەڕێوەبردنی دەرمانخانە</h1>
+  <div class="brand">
+    <span class="logo-badge">⚕️</span>
+    <h1>سیستەمی بەڕێوەبردنی دەرمانخانە</h1>
+  </div>
   <div class="row" style="gap:18px;">
     <div class="rate">
       نرخی دراو (١$ = دیناری):
@@ -546,17 +612,17 @@
 </header>
 
 <nav>
-  <button class="tab-btn active" data-tab="sell" id="sellTabBtn">فرۆشتن</button>
-  <button class="tab-btn" data-tab="inventory" id="inventoryTabBtn">کۆگا</button>
-  <button class="tab-btn" data-tab="history" id="historyTabBtn">مێژووی فرۆشتن</button>
-  <button class="tab-btn" data-tab="accounts" id="accountsTabBtn" style="display:none;">هەژمارەکان</button>
+  <button class="tab-btn active" data-tab="sell" id="sellTabBtn"><span class="tab-icon">🛒</span> فرۆشتن</button>
+  <button class="tab-btn" data-tab="inventory" id="inventoryTabBtn"><span class="tab-icon">📦</span> کۆگا</button>
+  <button class="tab-btn" data-tab="history" id="historyTabBtn"><span class="tab-icon">🧾</span> مێژووی فرۆشتن</button>
+  <button class="tab-btn" data-tab="accounts" id="accountsTabBtn" style="display:none;"><span class="tab-icon">👥</span> هەژمارەکان</button>
 </nav>
 
 <main>
 
   <!-- SELL TAB -->
   <section class="panel active" id="panel-sell">
-    <h2>خستنە ناو سەبەتەی فرۆشتن</h2>
+    <h2>🛒 خستنە ناو سەبەتەی فرۆشتن</h2>
     <div class="row">
       <input type="text" id="sellBarcodeInput" placeholder="بارکۆد بنووسە یان سکانی بکە و Enter بکە" style="flex:1; min-width:220px;">
       <button class="btn-amber" id="openScannerSell">📷 کردنەوەی کامێرا</button>
@@ -610,7 +676,7 @@
       <div id="subtotalRow" style="display:none;">کۆی پێش داشکاندن: <span id="subtotalIQD">0</span> د.ع / $<span id="subtotalUSD">0</span></div>
       <div id="discountRow" style="display:none; color:var(--danger);">داشکاندن: <span id="discountAmountIQD">0</span> د.ع / $<span id="discountAmountUSD">0</span></div>
       <div>کۆی گشتی (دینار): <span class="val" id="totalIQD">0</span></div>
-      <div>کۆی گشتی ($): <span class="val" id="totalUSD">0</span></div>
+      <div style="background:var(--history-soft); color:var(--history-deep);">کۆی گشتی ($): <span class="val" id="totalUSD" style="color:var(--history-deep);">0</span></div>
     </div>
 
     <div class="row" style="justify-content:flex-end; margin-top:14px;">
@@ -621,7 +687,7 @@
 
   <!-- INVENTORY TAB -->
   <section class="panel" id="panel-inventory">
-    <h2>لیستی دەرمانەکان</h2>
+    <h2>📦 لیستی دەرمانەکان</h2>
     <div class="row" style="margin-bottom: 6px;">
       <div class="search-wrap">
         <input type="text" id="invSearch" placeholder="گەڕان بە ناو یان بارکۆد...">
@@ -652,7 +718,7 @@
 
   <!-- HISTORY TAB -->
   <section class="panel" id="panel-history">
-    <h2>مێژووی فرۆشتنەکان</h2>
+    <h2>🧾 مێژووی فرۆشتنەکان</h2>
     <table>
       <thead>
         <tr>
@@ -670,7 +736,7 @@
 
   <!-- ACCOUNTS TAB (admin / permission-managed) -->
   <section class="panel" id="panel-accounts">
-    <h2 id="memberFormTitle">دروستکردنی هەژماری ئەندام</h2>
+    <h2 id="memberFormTitle">👤 دروستکردنی هەژماری ئەندام</h2>
     <div class="row" style="align-items:flex-start;">
       <div class="field" style="flex:1; min-width:180px;">
         <label>ناوی بەکارهێنەر</label>
@@ -691,7 +757,7 @@
     </div>
     <p class="auth-error" id="accountsError" style="text-align:right;"></p>
 
-    <h2 style="margin-top:26px;">هەژمارە ئەندامەکان</h2>
+    <h2 style="margin-top:26px;">👥 هەژمارە ئەندامەکان</h2>
     <div id="membersList"></div>
     <p class="empty-note" id="membersEmptyNote" style="display:none;">هیچ ئەندامێک دروست نەکراوە</p>
   </section>
@@ -703,7 +769,7 @@
 <!-- ADD/EDIT MEDICINE MODAL -->
 <div class="modal-bg" id="medicineModalBg">
   <div class="modal">
-    <h3 id="medicineModalTitle">زیادکردنی دەرمانی نوێ</h3>
+    <h3 id="medicineModalTitle">💊 زیادکردنی دەرمانی نوێ</h3>
     <div class="field">
       <label>بارکۆد</label>
       <div class="field-row">
@@ -734,6 +800,7 @@
         <input type="number" id="fPriceUSD" placeholder="0" min="0" step="0.01">
       </div>
     </div>
+    <p style="font-size:12px; color:var(--ink-dim); margin:-8px 0 14px;">تەنها یەکێکیان بنووسە، ئەوی تر بەپێی نرخی دراوی سەرەوە (لە هێدەرەکەدا) خۆکار دادەنرێت.</p>
     <div class="field">
       <label>بەرواری بەسەرچوون</label>
       <input type="date" id="fExpiry">
@@ -749,7 +816,7 @@
 <!-- SCANNER MODAL -->
 <div class="modal-bg" id="scannerModalBg">
   <div class="modal" style="max-width:520px;">
-    <h3>سکانکردنی بارکۆد</h3>
+    <h3>📷 سکانکردنی بارکۆد</h3>
     <div id="scanner-video-wrap"></div>
     <p style="font-size:13px; color:var(--ink-dim); margin-top:10px;">کامێراکە بەرەو بارکۆدەکە ڕابگرە تا خۆکار بناسرێتەوە.</p>
     <div class="row" style="justify-content:flex-end; margin-top:14px;">
@@ -807,7 +874,8 @@
     medicines: [], // {barcode, name, category, qty, priceIQD, priceUSD, expiry}
     sales: [],     // {time, items:[{barcode,name,qty,priceIQD,priceUSD}], totalIQD, totalUSD}
     users: [],     // {username, passwordHash, role: 'admin' | 'member', permissions: [keys]}
-    categories: [] // ["دژە ئازار", ...]
+    categories: [], // ["دژە ئازار", ...] — built up from whatever the user types in, no presets
+    exchangeRate: 1450 // IQD per 1 USD, shared across every device
   };
 
   let cart = []; // {barcode, name, qty, priceIQD, priceUSD, stockQty}
@@ -828,6 +896,7 @@
         state.sales = parsed.sales || [];
         state.users = parsed.users || [];
         state.categories = parsed.categories || [];
+        state.exchangeRate = parsed.exchangeRate || 1450;
       }
     } catch (e) { console.error('local cache read error', e); }
   }
@@ -856,6 +925,7 @@
     if (!firebaseOk || !dataRef) {
       // Cloud database unreachable (no internet, blocked, ad-blocker, etc).
       // Don't crash — just proceed with whatever is cached locally on this device.
+      applyExchangeRateToInput();
       openGateOnce();
       return;
     }
@@ -866,16 +936,21 @@
         state.sales = val.sales || [];
         state.users = val.users || [];
         state.categories = val.categories || [];
+        state.exchangeRate = val.exchangeRate || state.exchangeRate || 1450;
       }
       cacheLocally();
+      applyExchangeRateToInput();
       openGateOnce();
       if (appEntered) {
         renderInventory();
         renderHistory();
         renderMembers();
+        renderCategoryFilterOptions();
+        renderCategoryDatalist();
       }
     }, (err) => {
       console.error('firebase read error', err);
+      applyExchangeRateToInput();
       openGateOnce(); // fall back to whatever is cached locally
     });
   }
@@ -1045,6 +1120,31 @@
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
   }
+
+  // ---------- EXCHANGE RATE (IQD per $1, shared across every device) ----------
+  const exchangeRateInput = document.getElementById('exchangeRate');
+
+  function getExchangeRate() {
+    return parseFloat(exchangeRateInput.value) || state.exchangeRate || 0;
+  }
+
+  function applyExchangeRateToInput() {
+    // Don't stomp on the admin's typing if they're mid-edit on this field.
+    if (document.activeElement === exchangeRateInput) return;
+    exchangeRateInput.value = state.exchangeRate || 1450;
+  }
+
+  exchangeRateInput.addEventListener('change', () => {
+    const rate = parseFloat(exchangeRateInput.value);
+    if (!rate || rate <= 0) {
+      showToast('نرخی دراو دروست نییە');
+      applyExchangeRateToInput();
+      return;
+    }
+    state.exchangeRate = rate;
+    save();
+    showToast('نرخی دراو نوێکرایەوە ✔');
+  });
 
   // ---------- tabs ----------
   document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -1480,13 +1580,29 @@
   const fExpiry = document.getElementById('fExpiry');
   const deleteMedicineBtn = document.getElementById('deleteMedicineBtn');
 
+  // Typing a price in one currency auto-fills the other using the exchange
+  // rate set in the header. Whichever field the pharmacist typed into last
+  // wins; the other one is simply kept in sync.
+  fPriceIQD.addEventListener('input', () => {
+    const rate = getExchangeRate();
+    const iqd = parseFloat(fPriceIQD.value);
+    if (!rate || isNaN(iqd)) return;
+    fPriceUSD.value = (iqd / rate).toFixed(2);
+  });
+  fPriceUSD.addEventListener('input', () => {
+    const rate = getExchangeRate();
+    const usd = parseFloat(fPriceUSD.value);
+    if (!rate || isNaN(usd)) return;
+    fPriceIQD.value = Math.round(usd * rate);
+  });
+
   function openMedicineModal(barcode) {
     if (!hasPermission('inventory_edit')) return;
     editingBarcode = barcode || null;
     renderCategoryDatalist();
     if (barcode) {
       const m = findMedicine(barcode);
-      document.getElementById('medicineModalTitle').textContent = 'دەستکاریکردنی دەرمان';
+      document.getElementById('medicineModalTitle').textContent = '💊 دەستکاریکردنی دەرمان';
       fBarcode.value = m.barcode;
       fBarcode.disabled = true;
       fName.value = m.name;
@@ -1497,7 +1613,7 @@
       fExpiry.value = m.expiry || '';
       deleteMedicineBtn.style.display = hasPermission('inventory_delete') ? 'inline-block' : 'none';
     } else {
-      document.getElementById('medicineModalTitle').textContent = 'زیادکردنی دەرمانی نوێ';
+      document.getElementById('medicineModalTitle').textContent = '💊 زیادکردنی دەرمانی نوێ';
       fBarcode.value = '';
       fBarcode.disabled = false;
       fName.value = '';
@@ -1715,7 +1831,7 @@
 
   function resetMemberForm() {
     editingMemberUsername = null;
-    document.getElementById('memberFormTitle').textContent = 'دروستکردنی هەژماری ئەندام';
+    document.getElementById('memberFormTitle').textContent = '👤 دروستکردنی هەژماری ئەندام';
     document.getElementById('newMemberUsername').value = '';
     document.getElementById('newMemberUsername').disabled = false;
     document.getElementById('newMemberPassword').value = '';
@@ -1728,7 +1844,10 @@
   }
 
   function renderMembers() {
-    const users = state.users.slice().sort((a,b) => (a.role === b.role) ? 0 : (a.role === 'admin' ? -1 : 1));
+    // Only a true admin can see/manage other admin accounts — a member with
+    // accounts_manage permission only sees and manages member accounts.
+    const visibleUsers = isAdmin() ? state.users : state.users.filter(u => u.role !== 'admin');
+    const users = visibleUsers.slice().sort((a,b) => (a.role === b.role) ? 0 : (a.role === 'admin' ? -1 : 1));
     membersList.innerHTML = '';
     membersEmptyNote.style.display = users.length ? 'none' : 'block';
     const adminCount = state.users.filter(u => u.role === 'admin').length;
@@ -1770,6 +1889,7 @@
       // editing an existing account's username / password / permissions
       const u = findUser(editingMemberUsername);
       if (!u) { resetMemberForm(); return; }
+      if (u.role === 'admin' && !isAdmin()) { resetMemberForm(); return; } // members can't touch admin accounts
 
       if (!username) {
         accountsError.textContent = 'ناوی بەکارهێنەر ناتوانێت بەتاڵ بێت';
@@ -1832,6 +1952,7 @@
     const delBtn = e.target.closest('button[data-username]');
     if (delBtn) {
       const target = findUser(delBtn.dataset.username);
+      if (target && target.role === 'admin' && !isAdmin()) return; // members can't touch admin accounts
       if (target && target.role === 'admin' && state.users.filter(u => u.role === 'admin').length <= 1) {
         showToast('ناتوانرێت دوایین هەژماری بەڕێوەبەر بسڕدرێتەوە');
         return;
@@ -1847,8 +1968,9 @@
     if (editBtn) {
       const u = findUser(editBtn.dataset.edit);
       if (!u) return;
+      if (u.role === 'admin' && !isAdmin()) return; // members can't edit admin accounts
       editingMemberUsername = u.username;
-      document.getElementById('memberFormTitle').textContent = 'دەستکاریکردنی هەژماری: ' + u.username;
+      document.getElementById('memberFormTitle').textContent = '👤 دەستکاریکردنی هەژماری: ' + u.username;
       document.getElementById('newMemberUsername').value = u.username;
       document.getElementById('newMemberUsername').disabled = false;
       document.getElementById('newMemberPassword').value = '';
@@ -1868,6 +1990,9 @@
   // ---------- init ----------
   renderPermCheckboxes(['sell']);
   loadLocalCache();
+  applyExchangeRateToInput();
+  renderCategoryFilterOptions();
+  renderCategoryDatalist();
   startRealtimeSync();
   setTimeout(openGateOnce, 4000); // if the network is slow, proceed with the local cache anyway
 })();
