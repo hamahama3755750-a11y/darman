@@ -6,6 +6,7 @@
 <title>سیستەمی دەرمانخانە</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;700&family=Noto+Sans+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.js" onerror="window.__jsQRLoadFailed = true;"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js" onerror="window.__fbLoadFailed = true;"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-database-compat.js" onerror="window.__fbLoadFailed = true;"></script>
 <style>
@@ -237,6 +238,7 @@
   tr.warn-expiry td { background: var(--amber-soft); }
   tr.danger-expiry td { background: var(--danger-soft); }
   tr.low-stock .qty-cell { color: var(--danger); font-weight: 700; }
+  tr.out-of-stock td { background: var(--danger-soft); }
 
   .tag {
     display: inline-block;
@@ -251,6 +253,7 @@
   .tag-ok { background: var(--ok); color: #fff; }
   .tag-cat { background: var(--inventory); color: #fff; }
   .tag-perm { background: var(--history-soft); color: var(--history-deep); }
+  .tag-form { background: var(--sell-soft); color: var(--sell-deep); }
 
   .cart-box {
     border: 1px solid var(--border);
@@ -641,6 +644,7 @@
         <thead>
           <tr>
             <th>ناوی دەرمان</th>
+            <th>شێوە</th>
             <th>بارکۆد</th>
             <th>عدد</th>
             <th>نرخی یەک (IQD)</th>
@@ -688,6 +692,10 @@
   <!-- INVENTORY TAB -->
   <section class="panel" id="panel-inventory">
     <h2>📦 لیستی دەرمانەکان</h2>
+    <div id="lowStockBanner" style="display:none; margin-bottom:14px; padding:12px 16px; border-radius:12px; background:var(--danger-soft); color:var(--danger); font-size:13px; line-height:1.9;">
+      <div id="outOfStockLine" style="display:none;"><strong>🚫 تەواو بوون:</strong> <span id="outOfStockNames"></span></div>
+      <div id="lowStockLine" style="display:none;"><strong>⚠️ کۆگای کەم:</strong> <span id="lowStockNames"></span></div>
+    </div>
     <div class="row" style="margin-bottom: 6px;">
       <div class="search-wrap">
         <input type="text" id="invSearch" placeholder="گەڕان بە ناو یان بارکۆد...">
@@ -703,6 +711,7 @@
         <tr>
           <th>ناوی دەرمان</th>
           <th>جۆر</th>
+          <th>شێوە</th>
           <th>بارکۆد</th>
           <th>عدد لە کۆگا</th>
           <th>نرخ (IQD)</th>
@@ -724,6 +733,7 @@
         <tr>
           <th>کات و بەروار</th>
           <th>دەرمانەکان</th>
+          <th>فرۆشیار</th>
           <th>کۆی IQD</th>
           <th>کۆی $</th>
           <th></th>
@@ -787,6 +797,16 @@
       <datalist id="categoryList"></datalist>
     </div>
     <div class="field">
+      <label>شێوەی دەرمان (حەب، شەروب، ئامپول، ڤیاڵ...)</label>
+      <input type="text" id="fForm" placeholder="نموونە: حەب" list="formList">
+      <datalist id="formList">
+        <option value="حەب"></option>
+        <option value="شەروب"></option>
+        <option value="ئامپول"></option>
+        <option value="ڤیاڵ"></option>
+      </datalist>
+    </div>
+    <div class="field">
       <label>عددی بەردەست لە کۆگا</label>
       <input type="number" id="fQty" placeholder="0" min="0">
     </div>
@@ -818,7 +838,7 @@
   <div class="modal" style="max-width:520px;">
     <h3>📷 سکانکردنی بارکۆد</h3>
     <div id="scanner-video-wrap"></div>
-    <p style="font-size:13px; color:var(--ink-dim); margin-top:10px;">کامێراکە بەرەو بارکۆدەکە ڕابگرە تا خۆکار بناسرێتەوە.</p>
+    <p style="font-size:13px; color:var(--ink-dim); margin-top:10px;">کامێراکە بەرەو بارکۆد یان QR کۆدەکە ڕابگرە تا خۆکار بناسرێتەوە.</p>
     <div class="row" style="justify-content:flex-end; margin-top:14px;">
       <button class="btn-ghost" id="closeScannerBtn">داخستن</button>
     </div>
@@ -871,7 +891,7 @@
   const ALL_PERMISSION_KEYS = PERMISSIONS.map(p => p.key);
 
   let state = {
-    medicines: [], // {barcode, name, category, qty, priceIQD, priceUSD, expiry}
+    medicines: [], // {barcode, name, category, form, qty, priceIQD, priceUSD, expiry}
     sales: [],     // {time, items:[{barcode,name,qty,priceIQD,priceUSD}], totalIQD, totalUSD}
     users: [],     // {username, passwordHash, role: 'admin' | 'member', permissions: [keys]}
     categories: [], // ["دژە ئازار", ...] — built up from whatever the user types in, no presets
@@ -988,6 +1008,8 @@
     // inventory buttons
     document.getElementById('openAddModal').style.display = hasPermission('inventory_edit') ? '' : 'none';
     document.getElementById('discountBox').style.display = hasPermission('apply_discount') ? 'flex' : 'none';
+    exchangeRateInput.disabled = !hasPermission('inventory_edit');
+    exchangeRateInput.title = exchangeRateInput.disabled ? 'تەنها ئەوانەی مۆڵەتی دەستکاریکردنی کۆگایان هەیە دەتوانن ئەمە بگۆڕن' : '';
 
     document.getElementById('currentUserLabel').textContent =
       currentUser.username + ' · ' + (admin ? 'بەڕێوەبەر' : 'ئەندام');
@@ -1108,7 +1130,8 @@
     t.textContent = msg;
     t.classList.add('show');
     clearTimeout(t._timer);
-    t._timer = setTimeout(() => t.classList.remove('show'), 2200);
+    const duration = msg.length > 40 ? 4200 : 2200;
+    t._timer = setTimeout(() => t.classList.remove('show'), duration);
   }
   function findMedicine(barcode) {
     return state.medicines.find(m => m.barcode === barcode);
@@ -1135,6 +1158,11 @@
   }
 
   exchangeRateInput.addEventListener('change', () => {
+    if (!hasPermission('inventory_edit')) {
+      showToast('تەنها ئەوانەی مۆڵەتی دەستکاریکردنی کۆگایان هەیە دەتوانن نرخی دراو بگۆڕن');
+      applyExchangeRateToInput();
+      return;
+    }
     const rate = parseFloat(exchangeRateInput.value);
     if (!rate || rate <= 0) {
       showToast('نرخی دراو دروست نییە');
@@ -1142,9 +1170,24 @@
       return;
     }
     state.exchangeRate = rate;
+    // Re-price every medicine already in stock so the dollar price everyone
+    // sees at the register always matches today's rate — the dinar price is
+    // the one the pharmacy actually sets, so it stays the anchor.
+    let updatedCount = 0;
+    state.medicines.forEach(m => {
+      if (m.priceIQD > 0) {
+        m.priceUSD = Math.round((m.priceIQD / rate) * 100) / 100;
+        updatedCount++;
+      }
+    });
     save();
-    showToast('نرخی دراو نوێکرایەوە ✔');
+    renderInventory();
+    showToast('نرخی دراو نوێکرایەوە ✔ (نرخی دۆلاری ' + updatedCount + ' دەرمان گۆڕدرا)');
   });
+
+  // If another device changes the rate while items are in this device's
+  // cart, keep the cart's own per-line prices as they were added — they
+  // reflect the price agreed with the customer for this specific sale.
 
   // ---------- tabs ----------
   document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -1189,7 +1232,7 @@
     if (existing) {
       existing.qty += 1;
     } else {
-      cart.push({ barcode: med.barcode, name: med.name, qty: 1, priceIQD: med.priceIQD, priceUSD: med.priceUSD, stockQty: med.qty });
+      cart.push({ barcode: med.barcode, name: med.name, form: med.form || '', qty: 1, priceIQD: med.priceIQD, priceUSD: med.priceUSD, stockQty: med.qty });
     }
     renderCart();
   }
@@ -1236,6 +1279,7 @@
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>${escapeHtml(item.name)}</td>
+        <td>${item.form ? escapeHtml(item.form) : ''}</td>
         <td>${escapeHtml(item.barcode)}</td>
         <td>
           <div class="row" style="gap:4px;">
@@ -1307,14 +1351,17 @@
       }
     }
     const t = computeCartTotals();
+    const justRanOut = [];
     cart.forEach(item => {
       const med = findMedicine(item.barcode);
       med.qty -= item.qty;
-      saleItems.push({ barcode: item.barcode, name: item.name, qty: item.qty, priceIQD: item.priceIQD, priceUSD: item.priceUSD });
+      if (med.qty <= 0) justRanOut.push(med.name);
+      saleItems.push({ barcode: item.barcode, name: item.name, form: item.form || '', qty: item.qty, priceIQD: item.priceIQD, priceUSD: item.priceUSD });
     });
     const sale = {
       time: new Date().toISOString(),
       items: saleItems,
+      soldBy: currentUser ? currentUser.username : '',
       subtotalIQD: t.subtotalIQD,
       subtotalUSD: t.subtotalUSD,
       discountIQD: t.discountIQD,
@@ -1334,7 +1381,11 @@
       document.getElementById('discountReason').value = '';
     }
     renderCart();
-    showToast('فرۆشتنەکە تەواوبوو ✔');
+    if (justRanOut.length) {
+      showToast('فرۆشتنەکە تەواوبوو ✔ — 🚫 تەواو بوو: ' + justRanOut.join('، '));
+    } else {
+      showToast('فرۆشتنەکە تەواوبوو ✔');
+    }
     printReceipt(sale);
   });
 
@@ -1361,7 +1412,7 @@
       return;
     }
     sellNameSuggest.innerHTML = matches.map(m => {
-      const out = m.qty <= 0 ? '<span class="s-out">کۆگا تەواوبووە</span>' : `<span class="s-meta">عدد: ${m.qty} · ${fmt(m.priceIQD)} د.ع${m.category ? ' · ' + escapeHtml(m.category) : ''}</span>`;
+      const out = m.qty <= 0 ? '<span class="s-out">کۆگا تەواوبووە</span>' : `<span class="s-meta">عدد: ${m.qty} · ${fmt(m.priceIQD)} د.ع${m.form ? ' · ' + escapeHtml(m.form) : ''}${m.category ? ' · ' + escapeHtml(m.category) : ''}</span>`;
       return `<div class="suggest-item" data-barcode="${escapeHtml(m.barcode)}">
         <span class="s-name">${escapeHtml(m.name)}</span>
         ${out}
@@ -1454,6 +1505,32 @@
     const canEdit = hasPermission('inventory_edit');
     const canDelete = hasPermission('inventory_delete');
 
+    // Alert banner: name every item that's completely out ("تەواو بوو") on
+    // its own line, separate from ones that are merely running low, so
+    // whoever restocks knows exactly what's urgent vs what to watch.
+    const outOfStockItems = state.medicines.filter(m => m.qty <= 0);
+    const lowStockItems = state.medicines.filter(m => m.qty > 0 && m.qty <= 10);
+    const lowStockBanner = document.getElementById('lowStockBanner');
+    const outOfStockLine = document.getElementById('outOfStockLine');
+    const outOfStockNamesEl = document.getElementById('outOfStockNames');
+    const lowStockLine = document.getElementById('lowStockLine');
+    const lowStockNamesEl = document.getElementById('lowStockNames');
+    if (lowStockBanner) {
+      if (outOfStockItems.length) {
+        outOfStockNamesEl.textContent = outOfStockItems.map(m => m.name).join('، ');
+        outOfStockLine.style.display = 'block';
+      } else {
+        outOfStockLine.style.display = 'none';
+      }
+      if (lowStockItems.length) {
+        lowStockNamesEl.textContent = lowStockItems.map(m => `${m.name} (${m.qty})`).join('، ');
+        lowStockLine.style.display = 'block';
+      } else {
+        lowStockLine.style.display = 'none';
+      }
+      lowStockBanner.style.display = (outOfStockItems.length || lowStockItems.length) ? 'block' : 'none';
+    }
+
     list.forEach(m => {
       const dLeft = daysUntil(m.expiry);
       let rowClass = '';
@@ -1463,14 +1540,19 @@
         else if (dLeft <= 30) { rowClass = 'warn-expiry'; tag = '<span class="tag tag-warn">' + dLeft + ' ڕۆژ ماوە</span>'; }
         else { tag = '<span class="tag tag-ok">' + m.expiry + '</span>'; }
       }
-      const lowStock = m.qty <= 10;
+      const isOut = m.qty <= 0;
+      const lowStock = m.qty > 0 && m.qty <= 10;
       const tr = document.createElement('tr');
-      tr.className = rowClass + (lowStock ? ' low-stock' : '');
+      tr.className = rowClass + (isOut ? ' low-stock out-of-stock' : (lowStock ? ' low-stock' : ''));
+      let qtyTag = '';
+      if (isOut) qtyTag = ' <span class="tag tag-danger">تەواو بوو</span>';
+      else if (lowStock) qtyTag = ' <span class="tag tag-warn">کەم</span>';
       tr.innerHTML = `
         <td>${escapeHtml(m.name)}</td>
         <td>${m.category ? '<span class="tag tag-cat">' + escapeHtml(m.category) + '</span>' : ''}</td>
+        <td>${m.form ? '<span class="tag tag-form">' + escapeHtml(m.form) + '</span>' : ''}</td>
         <td>${escapeHtml(m.barcode)}</td>
-        <td class="qty-cell">${m.qty}${lowStock ? ' <span class="tag tag-danger">کەم</span>' : ''}</td>
+        <td class="qty-cell">${m.qty}${qtyTag}</td>
         <td>${fmt(m.priceIQD)}</td>
         <td>$${fmtUSD(m.priceUSD)}</td>
         <td>${tag}</td>
@@ -1504,6 +1586,7 @@
       tr.innerHTML = `
         <td>${dateStr}</td>
         <td>${escapeHtml(itemsStr)}</td>
+        <td>${escapeHtml(sale.soldBy || '-')}</td>
         <td>${fmt(sale.totalIQD)}${discTag}</td>
         <td>$${fmtUSD(sale.totalUSD)}</td>
         <td><button class="btn-ghost btn-sm" data-sale-idx="${idx}">🖨️ چاپکردنەوە</button></td>
@@ -1534,7 +1617,7 @@
     return `
       <div style="font-family:'Noto Kufi Arabic','Noto Sans Arabic',sans-serif; direction:rtl; padding:16px; max-width:340px; margin:0 auto; color:#111;">
         <h2 style="text-align:center; font-size:18px; margin-bottom:4px;">سیستەمی دەرمانخانە</h2>
-        <p style="text-align:center; font-size:11px; color:#555; margin-bottom:10px;">${dateStr}</p>
+        <p style="text-align:center; font-size:11px; color:#555; margin-bottom:10px;">${dateStr}${sale.soldBy ? ' · فرۆشیار: ' + escapeHtml(sale.soldBy) : ''}</p>
         <hr style="border:none; border-top:1px solid #999; margin:8px 0;">
         <table style="width:100%; font-size:12px; border-collapse:collapse;">
           <thead>
@@ -1574,6 +1657,7 @@
   const fBarcode = document.getElementById('fBarcode');
   const fName = document.getElementById('fName');
   const fCategory = document.getElementById('fCategory');
+  const fForm = document.getElementById('fForm');
   const fQty = document.getElementById('fQty');
   const fPriceIQD = document.getElementById('fPriceIQD');
   const fPriceUSD = document.getElementById('fPriceUSD');
@@ -1607,6 +1691,7 @@
       fBarcode.disabled = true;
       fName.value = m.name;
       fCategory.value = m.category || '';
+      fForm.value = m.form || '';
       fQty.value = m.qty;
       fPriceIQD.value = m.priceIQD;
       fPriceUSD.value = m.priceUSD;
@@ -1618,6 +1703,7 @@
       fBarcode.disabled = false;
       fName.value = '';
       fCategory.value = '';
+      fForm.value = '';
       fQty.value = '';
       fPriceIQD.value = '';
       fPriceUSD.value = '';
@@ -1638,6 +1724,7 @@
     const barcode = fBarcode.value.trim();
     const name = fName.value.trim();
     const category = fCategory.value.trim();
+    const form = fForm.value.trim();
     const qty = parseInt(fQty.value, 10) || 0;
     const priceIQD = parseFloat(fPriceIQD.value) || 0;
     const priceUSD = parseFloat(fPriceUSD.value) || 0;
@@ -1654,9 +1741,9 @@
 
     if (editingBarcode) {
       const m = findMedicine(editingBarcode);
-      m.name = name; m.category = category; m.qty = qty; m.priceIQD = priceIQD; m.priceUSD = priceUSD; m.expiry = expiry;
+      m.name = name; m.category = category; m.form = form; m.qty = qty; m.priceIQD = priceIQD; m.priceUSD = priceUSD; m.expiry = expiry;
     } else {
-      state.medicines.push({ barcode, name, category, qty, priceIQD, priceUSD, expiry });
+      state.medicines.push({ barcode, name, category, form, qty, priceIQD, priceUSD, expiry });
     }
     if (category && !state.categories.includes(category)) {
       state.categories.push(category);
@@ -1684,6 +1771,9 @@
   const scannerModalBg = document.getElementById('scannerModalBg');
   const scannerWrap = document.getElementById('scanner-video-wrap');
   let quaggaRunning = false;
+  let qrLoopId = null;
+  const qrCanvas = document.createElement('canvas');
+  const qrCtx = qrCanvas.getContext('2d', { willReadFrequently: true });
 
   function openScanner(target) {
     scannerTarget = target;
@@ -1715,17 +1805,49 @@
       }
       Quagga.start();
       quaggaRunning = true;
+      // Run our own QR reader on the same camera feed Quagga just opened,
+      // so one "📷 سکان" button reads both classic barcodes and QR codes.
+      startQrLoop();
     });
 
     Quagga.offDetected();
     Quagga.onDetected(function (result) {
       const code = result && result.codeResult && result.codeResult.code;
       if (!code) return;
-      handleScanResult(code);
+      handleScanResult(code, false);
     });
   }
 
+  function startQrLoop() {
+    stopQrLoop();
+    if (typeof jsQR === 'undefined') return; // library failed to load — barcode scanning still works
+    const tick = () => {
+      const video = scannerWrap.querySelector('video');
+      if (video && video.readyState === video.HAVE_ENOUGH_DATA) {
+        qrCanvas.width = video.videoWidth;
+        qrCanvas.height = video.videoHeight;
+        qrCtx.drawImage(video, 0, 0, qrCanvas.width, qrCanvas.height);
+        try {
+          const imageData = qrCtx.getImageData(0, 0, qrCanvas.width, qrCanvas.height);
+          const result = jsQR(imageData.data, imageData.width, imageData.height);
+          if (result && result.data) {
+            handleScanResult(result.data, true);
+            return; // stop the loop — a code was found and is being handled
+          }
+        } catch (e) { /* frame not ready yet — ignore and try again */ }
+      }
+      qrLoopId = requestAnimationFrame(tick);
+    };
+    qrLoopId = requestAnimationFrame(tick);
+  }
+
+  function stopQrLoop() {
+    if (qrLoopId) cancelAnimationFrame(qrLoopId);
+    qrLoopId = null;
+  }
+
   function stopQuagga() {
+    stopQrLoop();
     if (quaggaRunning && typeof Quagga !== 'undefined') {
       Quagga.stop();
       quaggaRunning = false;
@@ -1733,9 +1855,93 @@
     scannerWrap.innerHTML = '';
   }
 
-  function handleScanResult(code) {
+  // ---------- QR PAYLOAD PARSING ----------
+  // Health-ministry / manufacturer QR codes on medicine boxes usually follow
+  // either GS1 (the international pharma-packaging standard: AI (01) = GTIN,
+  // (17) = expiry as YYMMDD, (10) = batch/lot) or a plain JSON object. We try
+  // both, and fall back to treating the whole scanned text as an identifier
+  // so nothing is lost even if the format doesn't match.
+  function gs1ExpiryToIso(yymmdd) {
+    const yy = parseInt(yymmdd.slice(0, 2), 10);
+    const mm = parseInt(yymmdd.slice(2, 4), 10);
+    let dd = parseInt(yymmdd.slice(4, 6), 10);
+    if (isNaN(yy) || isNaN(mm)) return '';
+    const year = 2000 + yy;
+    if (!dd) dd = new Date(year, mm, 0).getDate(); // GS1: day "00" means end of month
+    return `${year}-${String(mm).padStart(2, '0')}-${String(dd).padStart(2, '0')}`;
+  }
+
+  function parseQrPayload(raw) {
+    const result = {};
+
+    // 1) Plain JSON payload, e.g. {"name":"Panadol","expiry":"2027-05-01",...}
+    try {
+      const obj = JSON.parse(raw);
+      if (obj && typeof obj === 'object') {
+        const name = obj.name || obj.medicineName || obj.drugName || obj['اسم'] || obj['ناو'];
+        const expiryRaw = obj.expiry || obj.exp || obj.expiryDate || obj['تاريخ الانتهاء'];
+        const gtin = obj.gtin || obj.barcode || obj.code || obj.id;
+        const batch = obj.batch || obj.lot;
+        if (name) result.name = String(name);
+        if (expiryRaw) result.expiry = String(expiryRaw).slice(0, 10);
+        if (gtin) result.gtin = String(gtin);
+        if (batch) result.batch = String(batch);
+        if (result.name || result.expiry || result.gtin) return result;
+      }
+    } catch (e) { /* not JSON — fall through */ }
+
+    // 2) GS1 element string with bracketed application identifiers, e.g.
+    //    (01)12345678901231(17)261231(10)LOT123
+    const gs1 = {};
+    const aiRegex = /\((\d{2,4})\)([^()]+)/g;
+    let m, matchedAny = false;
+    while ((m = aiRegex.exec(raw)) !== null) {
+      matchedAny = true;
+      gs1[m[1]] = m[2].trim();
+    }
+    if (matchedAny) {
+      if (gs1['01']) result.gtin = gs1['01'];
+      if (gs1['17']) result.expiry = gs1ExpiryToIso(gs1['17']);
+      if (gs1['10']) result.batch = gs1['10'];
+      if (result.gtin || result.expiry) return result;
+    }
+
+    // 3) Unbracketed GS1 fixed-length fields (01 + 14-digit GTIN, 17 + 6-digit date)
+    const fixedMatch = raw.match(/01(\d{14}).*?17(\d{6})/);
+    if (fixedMatch) {
+      result.gtin = fixedMatch[1];
+      result.expiry = gs1ExpiryToIso(fixedMatch[2]);
+      return result;
+    }
+
+    // 4) Unrecognized format — keep the raw text as the identifier so the
+    //    pharmacist can still see what was scanned and fill in the rest.
+    result.barcode = raw;
+    return result;
+  }
+
+  function applyQrToMedicineForm(parsed) {
+    if (parsed.gtin) fBarcode.value = parsed.gtin;
+    else if (parsed.barcode) fBarcode.value = parsed.barcode;
+    if (parsed.name) fName.value = parsed.name;
+    if (parsed.expiry) fExpiry.value = parsed.expiry;
+  }
+
+  function handleScanResult(code, isQr) {
     stopQuagga();
     scannerModalBg.classList.remove('show');
+
+    if (isQr) {
+      const parsed = parseQrPayload(code);
+      if (scannerTarget === 'form') {
+        applyQrToMedicineForm(parsed);
+        showToast('زانیاری QR وەرگیرا ✔ — تکایە پشتڕاستی بکەرەوە پێش پاشەکەوتکردن');
+      } else if (scannerTarget === 'sell') {
+        addBarcodeToCart(parsed.gtin || parsed.barcode || code);
+      }
+      return;
+    }
+
     if (scannerTarget === 'sell') {
       addBarcodeToCart(code);
     } else if (scannerTarget === 'form') {
