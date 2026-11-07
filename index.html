@@ -537,11 +537,425 @@
     }
   }
 
+  /* =====================================================
+     3D PHARMACY THEME (header, tab cards, sell panel)
+     ===================================================== */
+  :root {
+    --coral: #EE6A55;
+    --coral-deep: #D24A36;
+    --gold: #D9A441;
+    --purple: #6B4FD8;
+    --purple-deep: #4C34B3;
+  }
+
+  body { background: linear-gradient(180deg, #E9EEF8 0%, #F4F1EA 100%); background-attachment: fixed; }
+
+  header {
+    position: relative;
+    overflow: hidden;
+    color: #14403B;
+    padding: 18px 22px 26px;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.35), rgba(238,244,246,0.92)),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='220' viewBox='0 0 600 220'><rect width='600' height='220' fill='%23E6EEF0'/><g opacity='.9'><rect y='60' width='600' height='6' fill='%23B9C7CC'/><rect y='120' width='600' height='6' fill='%23B9C7CC'/><rect y='180' width='600' height='6' fill='%23B9C7CC'/><g fill='%2388B7C4'><rect x='20' y='22' width='26' height='38' rx='3'/><rect x='56' y='30' width='20' height='30' rx='3'/><rect x='170' y='20' width='30' height='40' rx='3'/><rect x='330' y='26' width='24' height='34' rx='3'/><rect x='470' y='18' width='28' height='42' rx='3'/></g><g fill='%23E4B968'><rect x='90' y='28' width='22' height='32' rx='3'/><rect x='250' y='24' width='26' height='36' rx='3'/><rect x='410' y='30' width='22' height='30' rx='3'/><rect x='540' y='22' width='24' height='38' rx='3'/></g><g fill='%2394C7A4'><rect x='30' y='84' width='30' height='36' rx='3'/><rect x='130' y='80' width='24' height='40' rx='3'/><rect x='300' y='86' width='28' height='34' rx='3'/><rect x='440' y='82' width='26' height='38' rx='3'/></g><g fill='%23E88F82'><rect x='80' y='90' width='24' height='30' rx='3'/><rect x='210' y='84' width='30' height='36' rx='3'/><rect x='380' y='88' width='22' height='32' rx='3'/><rect x='520' y='84' width='28' height='36' rx='3'/></g></g></svg>") center/cover;
+    border-bottom: 1px solid rgba(20,64,59,0.15);
+    box-shadow: 0 10px 26px rgba(20,64,59,0.16);
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  header .brand { gap: 14px; justify-content: space-between; flex-direction: row-reverse; }
+  header h1 { color: #17403B; font-size: 22px; line-height: 1.5; text-shadow: 0 2px 0 rgba(255,255,255,0.9); flex: 1; }
+
+  header .logo-badge {
+    width: 84px; height: 84px; border-radius: 50%; background: radial-gradient(circle at 50% 40%, #FFF6DC, #F1D690 70%, #D9A441);
+    box-shadow: 0 8px 18px rgba(217,164,65,0.45), inset 0 -4px 8px rgba(160,110,20,0.25);
+    padding: 8px;
+  }
+  header .logo-badge svg { width: 100%; height: 100%; filter: drop-shadow(0 2px 2px rgba(80,50,0,0.35)); }
+
+  header > .row { justify-content: space-between; align-items: center; }
+
+  header .rate {
+    color: #17403B;
+    background: #fff;
+    padding: 10px 16px;
+    border-radius: 16px;
+    box-shadow: 0 6px 16px rgba(20,64,59,0.15), inset 0 1px 0 #fff;
+    font-weight: 500;
+  }
+  header .rate input {
+    width: 100px; font-size: 20px; font-weight: 700; color: #1F3A34;
+    border: none; border-bottom: 3px solid #2F6FED; border-radius: 6px 6px 0 0; background: #F3F6FD;
+  }
+
+  .user-box { color: #17403B; font-weight: 500; }
+  .user-box .btn-ghost {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: #fff; border: none; padding: 9px 18px; border-radius: 12px;
+    background: linear-gradient(180deg, #8467F0, #5B3FCB);
+    box-shadow: 0 5px 0 #3E2A98, 0 10px 18px rgba(75,50,180,0.35);
+  }
+  .user-box .btn-ghost:hover { background: linear-gradient(180deg, #8F74F5, #6446D6); }
+  .user-box .btn-ghost:active { transform: translateY(3px); box-shadow: 0 2px 0 #3E2A98; }
+
+  /* ---- 3D tab cards ---- */
+  nav {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+    gap: 14px;
+    padding: 22px 22px 6px;
+  }
+
+  .tab-btn {
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 2px;
+    padding: 10px 8px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.9);
+    background: linear-gradient(180deg, #FFFFFF 0%, #EEF1F8 100%);
+    color: var(--ink);
+    box-shadow: 0 6px 0 rgba(120,130,170,0.28), 0 14px 22px rgba(30,40,80,0.14), inset 0 2px 0 #fff;
+    transition: transform .15s ease, box-shadow .15s ease;
+    position: relative;
+  }
+  .tab-btn:hover { transform: translateY(-2px); }
+  .tab-btn:active { transform: translateY(3px) scale(1); box-shadow: 0 2px 0 rgba(120,130,170,0.28), 0 6px 10px rgba(30,40,80,0.12); }
+
+  .tab-btn .tab-art {
+    width: 100%; aspect-ratio: 1.45; border-radius: 14px; overflow: hidden; display: block;
+    box-shadow: inset 0 -4px 10px rgba(0,0,0,0.18), inset 0 2px 0 rgba(255,255,255,0.35), 0 4px 8px rgba(0,0,0,0.18);
+    margin-bottom: 6px;
+  }
+  .tab-btn .tab-art svg { width: 100%; height: 100%; display: block; }
+  .tab-btn .tab-title { font-size: 15px; font-weight: 700; color: var(--ink); line-height: 1.4; }
+  .tab-btn .tab-sub { font-family: 'Noto Sans Arabic', sans-serif; font-size: 12px; color: var(--ink-dim); font-weight: 400; direction: ltr; }
+
+  .tab-btn.active { transform: translateY(-4px); font-weight: 700; }
+  .tab-btn[data-tab="sell"].active { background: linear-gradient(180deg,#fff,#E3ECFE); border-color: var(--sell); color: var(--ink); box-shadow: 0 6px 0 #1E52C2, 0 16px 26px rgba(47,111,237,0.4); }
+  .tab-btn[data-tab="inventory"].active { background: linear-gradient(180deg,#fff,#DDF5F1); border-color: var(--inventory); color: var(--ink); box-shadow: 0 6px 0 #0B8474, 0 16px 26px rgba(14,168,148,0.38); }
+  .tab-btn[data-tab="history"].active { background: linear-gradient(180deg,#fff,#EEE7FE); border-color: var(--history); color: var(--ink); box-shadow: 0 6px 0 #6D3FDB, 0 16px 26px rgba(139,92,246,0.38); }
+  .tab-btn[data-tab="accounts"].active { background: linear-gradient(180deg,#fff,#FDEBD6); border-color: var(--accounts); color: var(--ink); box-shadow: 0 6px 0 #D97B24, 0 16px 26px rgba(242,153,74,0.38); }
+  .tab-btn.active .tab-title { color: var(--ink); }
+
+  /* ---- panels get a floating 3D feel ---- */
+  .panel {
+    border-radius: 20px;
+    box-shadow: 0 8px 0 rgba(120,130,170,0.16), 0 22px 40px rgba(30,40,80,0.12);
+    overflow: hidden;
+  }
+
+  /* ---- sell panel: coral banner ---- */
+  #panel-sell { border-top-color: transparent; border-top-width: 0; padding-top: 0; }
+  #panel-sell > h2 {
+    display: flex; align-items: center; gap: 10px;
+    margin: 0 -24px 22px;
+    padding: 18px 24px;
+    font-size: 21px;
+    color: #fff;
+    background: linear-gradient(180deg, #F5806B, #E85A45);
+    box-shadow: inset 0 -4px 0 rgba(0,0,0,0.12), 0 6px 14px rgba(232,90,69,0.3);
+    text-shadow: 0 2px 0 rgba(0,0,0,0.15);
+  }
+  #panel-sell > h2 svg { width: 30px; height: 30px; flex-shrink: 0; }
+
+  /* barcode-style input with scan line */
+  #sellBarcodeInput {
+    flex: 1 1 100% !important;
+    min-height: 58px;
+    font-size: 16px;
+    border-radius: 16px;
+    border: 1px solid #DADDE4;
+    background-color: #EFEFF2;
+    background-image:
+      linear-gradient(90deg, transparent 0, transparent 38%, rgba(230,60,60,0.0) 38%, rgba(230,60,60,0.55) 38.4%, rgba(230,60,60,0.0) 39%, transparent 100%),
+      repeating-linear-gradient(90deg, #C9CBD2 0 2px, transparent 2px 5px, #C9CBD2 5px 6px, transparent 6px 11px, #C9CBD2 11px 14px, transparent 14px 17px);
+    box-shadow: inset 0 3px 8px rgba(0,0,0,0.12);
+    color: #2B3148;
+  }
+  #sellBarcodeInput:focus { border-color: var(--coral); box-shadow: inset 0 3px 8px rgba(0,0,0,0.12), 0 0 0 3px rgba(238,106,85,0.25); }
+
+  /* 3D camera button */
+  #openScannerSell {
+    display: inline-flex; align-items: center; justify-content: center; gap: 12px;
+    padding: 14px 26px; font-size: 17px; font-weight: 700; color: #fff;
+    border-radius: 16px; border: 2px solid rgba(255,255,255,0.55);
+    background: linear-gradient(180deg, #F0784C 0%, #C9431F 100%);
+    box-shadow: 0 6px 0 #8F2C12, 0 14px 22px rgba(201,67,31,0.4), inset 0 2px 0 rgba(255,255,255,0.45);
+    text-shadow: 0 2px 0 rgba(0,0,0,0.25);
+  }
+  #openScannerSell:active { transform: translateY(4px); box-shadow: 0 2px 0 #8F2C12, 0 6px 10px rgba(201,67,31,0.35); }
+  #openScannerSell svg { width: 34px; height: 34px; flex-shrink: 0; filter: drop-shadow(0 3px 3px rgba(0,0,0,0.4)); }
+
+  /* 3D primary buttons */
+  .btn-primary { box-shadow: 0 4px 0 rgba(0,0,0,0.22), 0 8px 14px rgba(30,40,80,0.18); }
+  .btn-primary:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,0.22); }
+  #checkoutBtn { background: linear-gradient(180deg, #4C86F5, #2459CF); box-shadow: 0 5px 0 #173F96, 0 10px 18px rgba(36,89,207,0.35); padding: 13px 26px; font-size: 15px; }
+  #checkoutBtn:active { box-shadow: 0 1px 0 #173F96; }
+
   @media (max-width: 640px) {
-    header { flex-direction: column; align-items: flex-start; }
+    nav { padding: 18px 12px 4px; gap: 10px; }
+    .tab-btn .tab-title { font-size: 14px; }
+    #panel-sell > h2 { margin: 0 -16px 18px; padding: 16px; font-size: 19px; }
+    header { padding: 14px 14px 20px; }
+    header h1 { font-size: 19px; }
+    header > .row { flex-direction: column; align-items: stretch; gap: 12px !important; }
+    .user-box { justify-content: space-between; }
+  }
+
+  @media (max-width: 640px) {
+    header { flex-direction: column; align-items: stretch; }
     main { padding: 0 12px; }
     .panel { padding: 16px; border-radius: 12px; }
     .totals { flex-direction: column; gap: 6px; align-items: flex-end; }
+  }
+  /* =====================================================
+     V2 — SOFTER PALETTE + 3D ON EVERYTHING
+     ===================================================== */
+  :root {
+    --bg: #F3EEE4;
+    --ink: #24332F;
+    --ink-dim: #6B7B76;
+    --border: rgba(36, 51, 47, 0.12);
+    --ok: #4C9B66;
+
+    --sell: #5B88C4;        --sell-deep: #3F6BA6;        --sell-soft: #E6EDF7;
+    --inventory: #4FA595;   --inventory-deep: #3A8576;   --inventory-soft: #E1F0EC;
+    --history: #8F7CC8;     --history-deep: #6F5CA8;     --history-soft: #ECE8F6;
+    --accounts: #E0A267;    --accounts-deep: #C4814A;    --accounts-soft: #F9EBDB;
+    --danger: #D9645C;      --danger-soft: #F8E3E0;
+    --coral: #E07662;       --coral-deep: #C95A47;
+    --edge: rgba(36, 51, 47, 0.16);
+  }
+
+  body {
+    background:
+      radial-gradient(1200px 500px at 50% -120px, rgba(255,255,255,0.85), rgba(255,255,255,0) 70%),
+      linear-gradient(180deg, #EFEBE1 0%, #F6F2EA 60%, #EDE8DD 100%);
+    background-attachment: fixed;
+  }
+
+  /* ---------- header: blurred pharmacy shelves, soft light, counter ---------- */
+  header {
+    color: #1F4540;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.20) 0%, rgba(246,244,238,0.55) 60%, rgba(244,240,232,0.95) 100%),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='300' viewBox='0 0 800 300' preserveAspectRatio='xMidYMid slice'><defs><filter id='b' x='-10%' y='-10%' width='120%' height='120%'><feGaussianBlur stdDeviation='3.2'/></filter><linearGradient id='w' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%23F4F7F7'/><stop offset='1' stop-color='%23DCE6E7'/></linearGradient></defs><rect width='800' height='300' fill='url(%23w)'/><g filter='url(%23b)'><rect x='0' y='70' width='800' height='7' fill='%23AFC0C4'/><rect x='0' y='140' width='800' height='7' fill='%23AFC0C4'/><rect x='0' y='210' width='800' height='7' fill='%23AFC0C4'/><g fill='%2395BFCB'><rect x='24' y='26' width='30' height='44' rx='4'/><rect x='64' y='34' width='22' height='36' rx='4'/><rect x='214' y='24' width='34' height='46' rx='4'/><rect x='400' y='30' width='26' height='40' rx='4'/><rect x='590' y='22' width='32' height='48' rx='4'/><rect x='720' y='34' width='24' height='36' rx='4'/></g><g fill='%23E8C47E'><rect x='110' y='32' width='26' height='38' rx='4'/><rect x='300' y='28' width='30' height='42' rx='4'/><rect x='500' y='34' width='26' height='36' rx='4'/><rect x='660' y='26' width='28' height='44' rx='4'/></g><g fill='%239CCBAE'><rect x='40' y='100' width='34' height='40' rx='4'/><rect x='160' y='96' width='28' height='44' rx='4'/><rect x='360' y='102' width='32' height='38' rx='4'/><rect x='560' y='98' width='30' height='42' rx='4'/></g><g fill='%23E9A196'><rect x='96' y='106' width='28' height='34' rx='4'/><rect x='250' y='100' width='34' height='40' rx='4'/><rect x='450' y='104' width='26' height='36' rx='4'/><rect x='650' y='100' width='32' height='40' rx='4'/></g><g fill='%23C9B7E6'><rect x='30' y='168' width='28' height='42' rx='4'/><rect x='200' y='172' width='32' height='38' rx='4'/><rect x='420' y='166' width='30' height='44' rx='4'/><rect x='610' y='172' width='28' height='38' rx='4'/></g></g><rect y='262' width='800' height='38' fill='%23F7F5F0'/></svg>") center/cover;
+    border-bottom: 1px solid rgba(31,69,64,0.12);
+    box-shadow: 0 12px 28px rgba(60,70,60,0.16), inset 0 -3px 0 rgba(255,255,255,0.7);
+  }
+  header h1 { color: #1F4540; text-shadow: 0 2px 0 rgba(255,255,255,0.95), 0 6px 12px rgba(31,69,64,0.12); }
+
+  header .logo-badge {
+    background: radial-gradient(circle at 50% 38%, #FFFAE9 0%, #F3DFA6 62%, #D9B35E 100%);
+    box-shadow: 0 10px 20px rgba(173,131,45,0.38), inset 0 -5px 10px rgba(150,105,25,0.28), inset 0 3px 0 rgba(255,255,255,0.85);
+  }
+
+  header .rate {
+    background: linear-gradient(180deg, #FFFFFF, #F4F1EA);
+    border: 1px solid rgba(255,255,255,0.9);
+    box-shadow: 0 5px 0 rgba(36,51,47,0.10), 0 12px 22px rgba(36,51,47,0.14), inset 0 2px 0 #fff;
+  }
+  header .rate input { border-bottom-color: var(--sell); background: #EEF2F8; box-shadow: inset 0 2px 5px rgba(36,51,47,0.14); }
+
+  .user-box { color: #1F4540; }
+  .user-box .btn-ghost {
+    background-image: linear-gradient(180deg, #9684D2, #6F5CAF);
+    box-shadow: 0 5px 0 #4D3E85, 0 10px 18px rgba(80,62,150,0.30), inset 0 2px 0 rgba(255,255,255,0.35);
+  }
+  .user-box .btn-ghost:hover { background-image: linear-gradient(180deg, #A190DA, #7865B8); }
+  .user-box .btn-ghost:active { box-shadow: 0 1px 0 #4D3E85; }
+
+  /* ---------- divider with medallion (like the reference) ---------- */
+  .divider { max-width: 1100px; margin: 0 auto; padding: 14px 24px 0; display: flex; align-items: center; gap: 12px; }
+  .divider::before, .divider::after { content: ""; flex: 1; height: 3px; border-radius: 3px; background: linear-gradient(90deg, rgba(36,51,47,0), rgba(36,51,47,0.20), rgba(36,51,47,0)); box-shadow: 0 1px 0 rgba(255,255,255,0.9); }
+  .divider span {
+    width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(circle at 35% 30%, #FFFFFF, #E4E1D8);
+    box-shadow: 0 4px 0 rgba(36,51,47,0.14), 0 8px 14px rgba(36,51,47,0.16), inset 0 1px 0 #fff;
+  }
+  .divider svg { width: 18px; height: 18px; }
+
+  /* ---------- tab cards: softer, glossy art ---------- */
+  nav { padding-top: 14px; }
+  .tab-btn {
+    background: linear-gradient(180deg, #FFFFFF 0%, #F1EEE6 100%);
+    border: 1px solid rgba(255,255,255,0.95);
+    box-shadow: 0 7px 0 rgba(36,51,47,0.13), 0 16px 24px rgba(36,51,47,0.13), inset 0 2px 0 #fff;
+  }
+  .tab-btn:active { box-shadow: 0 2px 0 rgba(36,51,47,0.13), 0 6px 10px rgba(36,51,47,0.12); }
+  .tab-btn .tab-art { position: relative; }
+  .tab-btn .tab-art svg { filter: saturate(0.82) brightness(0.98); }
+  .tab-btn .tab-art::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+    background: linear-gradient(160deg, rgba(255,255,255,0.38) 0%, rgba(255,255,255,0) 42%), radial-gradient(120% 90% at 50% 120%, rgba(0,0,0,0.20), rgba(0,0,0,0) 60%);
+  }
+  .tab-btn[data-tab="sell"].active { background: linear-gradient(180deg,#fff,#E6EDF7); border-color: var(--sell); box-shadow: 0 7px 0 var(--sell-deep), 0 18px 28px rgba(63,107,166,0.32); }
+  .tab-btn[data-tab="inventory"].active { background: linear-gradient(180deg,#fff,#E1F0EC); border-color: var(--inventory); box-shadow: 0 7px 0 var(--inventory-deep), 0 18px 28px rgba(58,133,118,0.30); }
+  .tab-btn[data-tab="history"].active { background: linear-gradient(180deg,#fff,#ECE8F6); border-color: var(--history); box-shadow: 0 7px 0 var(--history-deep), 0 18px 28px rgba(111,92,168,0.30); }
+  .tab-btn[data-tab="accounts"].active { background: linear-gradient(180deg,#fff,#F9EBDB); border-color: var(--accounts); box-shadow: 0 7px 0 var(--accounts-deep), 0 18px 28px rgba(196,129,74,0.30); }
+
+  /* ---------- panels: raised cards with coloured banner headings ---------- */
+  .panel {
+    border: 1px solid rgba(255,255,255,0.95);
+    border-top-width: 0 !important;
+    padding-top: 0;
+    background: linear-gradient(180deg, #FFFFFF 0%, #FBF9F4 100%);
+    box-shadow: 0 9px 0 rgba(36,51,47,0.09), 0 26px 44px rgba(36,51,47,0.14), inset 0 2px 0 #fff;
+  }
+  .panel > h2:first-child {
+    display: flex; align-items: center; gap: 10px;
+    margin: 0 -24px 22px; padding: 18px 24px;
+    font-size: 21px; color: #fff !important;
+    text-shadow: 0 2px 0 rgba(0,0,0,0.16);
+    box-shadow: inset 0 -4px 0 rgba(0,0,0,0.10), 0 6px 14px rgba(36,51,47,0.18);
+    background-image: linear-gradient(180deg, rgba(255,255,255,0.20), rgba(255,255,255,0) 55%);
+  }
+  #panel-sell > h2:first-child { background-color: var(--coral); }
+  #panel-inventory > h2:first-child { background-color: var(--inventory); }
+  #panel-history > h2:first-child { background-color: var(--history); }
+  #panel-accounts > h2:first-child { background-color: var(--accounts); }
+  #panel-sell > h2 { background-image: linear-gradient(180deg, rgba(255,255,255,0.20), rgba(255,255,255,0) 55%); }
+
+  /* ---------- inputs: pressed-in ---------- */
+  input, select {
+    background: linear-gradient(180deg, #F1EEE6, #F8F6F1);
+    border: 1px solid rgba(36,51,47,0.16);
+    box-shadow: inset 0 3px 7px rgba(36,51,47,0.10), 0 1px 0 #fff;
+    border-radius: 12px;
+  }
+  input:focus, select:focus { border-color: var(--sell); box-shadow: inset 0 3px 7px rgba(36,51,47,0.10), 0 0 0 3px rgba(91,136,196,0.22); }
+  #panel-inventory input:focus, #panel-inventory select:focus { border-color: var(--inventory); box-shadow: inset 0 3px 7px rgba(36,51,47,0.10), 0 0 0 3px rgba(79,165,149,0.22); }
+  #sellBarcodeInput { background-color: #ECE9E2; box-shadow: inset 0 4px 9px rgba(36,51,47,0.16); }
+  #sellBarcodeInput:focus { border-color: var(--coral); box-shadow: inset 0 4px 9px rgba(36,51,47,0.16), 0 0 0 3px rgba(224,118,98,0.25); }
+
+  /* ---------- buttons: all get a thick 3D edge and gloss ---------- */
+  button { position: relative; background-image: linear-gradient(180deg, rgba(255,255,255,0.26), rgba(255,255,255,0) 55%); }
+  .btn-primary { background-color: var(--sell); box-shadow: 0 4px 0 var(--sell-deep), 0 10px 16px rgba(63,107,166,0.25), inset 0 1px 0 rgba(255,255,255,0.4); }
+  #panel-inventory .btn-primary { background-color: var(--inventory); box-shadow: 0 4px 0 var(--inventory-deep), 0 10px 16px rgba(58,133,118,0.25), inset 0 1px 0 rgba(255,255,255,0.4); }
+  #panel-accounts .btn-primary { background-color: var(--accounts); box-shadow: 0 4px 0 var(--accounts-deep), 0 10px 16px rgba(196,129,74,0.25), inset 0 1px 0 rgba(255,255,255,0.4); }
+  .btn-primary:hover { background-color: var(--sell-deep); }
+  .btn-amber { background-color: var(--accounts); box-shadow: 0 4px 0 var(--accounts-deep), 0 10px 16px rgba(196,129,74,0.25), inset 0 1px 0 rgba(255,255,255,0.4); }
+  .btn-danger { background-color: var(--danger); box-shadow: 0 4px 0 #A9433C, 0 10px 16px rgba(169,67,60,0.25), inset 0 1px 0 rgba(255,255,255,0.4); }
+  .btn-ghost { background-color: #FBFAF6; box-shadow: 0 4px 0 rgba(36,51,47,0.16), 0 8px 12px rgba(36,51,47,0.08), inset 0 1px 0 #fff; border: 1px solid rgba(36,51,47,0.10); }
+  .btn-sm { box-shadow-width: 0; }
+  button:active { transform: translateY(3px); }
+  .btn-primary:active, .btn-amber:active, .btn-danger:active, .btn-ghost:active { box-shadow: 0 1px 0 rgba(0,0,0,0.25); }
+  .user-box .btn-ghost { background-color: #7C69BE; border: none; }
+  #checkoutBtn { background-color: #4F86C6; background-image: linear-gradient(180deg, rgba(255,255,255,0.28), rgba(255,255,255,0) 55%); box-shadow: 0 5px 0 #34619B, 0 12px 20px rgba(52,97,155,0.30), inset 0 1px 0 rgba(255,255,255,0.4); }
+  #openScannerSell {
+    background-color: #D9693F;
+    background-image: linear-gradient(180deg, rgba(255,255,255,0.28), rgba(255,255,255,0) 55%);
+    box-shadow: 0 6px 0 #9C4527, 0 14px 22px rgba(156,69,39,0.35), inset 0 2px 0 rgba(255,255,255,0.45);
+  }
+  #openScannerSell:active { box-shadow: 0 2px 0 #9C4527; }
+
+  /* ---------- tables: each row is a little raised card ---------- */
+  table { border-collapse: separate; border-spacing: 0 8px; margin-top: 8px; }
+  th { border: none; background: transparent; padding: 6px 10px; color: var(--ink-dim); }
+  tbody td {
+    border: none;
+    background: linear-gradient(180deg, #FFFFFF, #F8F6F1);
+    box-shadow: 0 3px 0 rgba(36,51,47,0.07), 0 8px 12px rgba(36,51,47,0.05);
+  }
+  tbody tr:hover td { background: linear-gradient(180deg, #FFFFFF, #F1F4F8); }
+  tbody td:first-child { border-start-start-radius: 12px; border-end-start-radius: 12px; }
+  tbody td:last-child { border-start-end-radius: 12px; border-end-end-radius: 12px; }
+  tr.warn-expiry td { background: linear-gradient(180deg, #FBEFD9, #F6E3C2); }
+  tr.danger-expiry td, tr.out-of-stock td { background: linear-gradient(180deg, #FBE9E6, #F5D6D2); }
+  .cart-box {
+    border: 1px solid rgba(36,51,47,0.10); border-radius: 16px; padding: 4px 10px 8px;
+    background: linear-gradient(180deg, #F2EFE8, #F8F6F1);
+    box-shadow: inset 0 4px 10px rgba(36,51,47,0.10), 0 1px 0 #fff;
+  }
+
+  /* ---------- tags / chips / totals ---------- */
+  .tag { box-shadow: 0 2px 0 rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,0.35); background-image: linear-gradient(180deg, rgba(255,255,255,0.25), rgba(255,255,255,0)); }
+  .totals > div {
+    background: linear-gradient(180deg, #FFFFFF, var(--sell-soft));
+    box-shadow: 0 5px 0 rgba(63,107,166,0.20), 0 12px 18px rgba(36,51,47,0.10), inset 0 2px 0 #fff;
+    border: 1px solid rgba(255,255,255,0.9);
+  }
+  .totals #discountRow { background: linear-gradient(180deg, #FFFFFF, var(--danger-soft)); box-shadow: 0 5px 0 rgba(169,67,60,0.20), 0 12px 18px rgba(36,51,47,0.10), inset 0 2px 0 #fff; }
+  .totals > div[style*="history-soft"] { background: linear-gradient(180deg, #FFFFFF, var(--history-soft)) !important; box-shadow: 0 5px 0 rgba(111,92,168,0.20), 0 12px 18px rgba(36,51,47,0.10), inset 0 2px 0 #fff; }
+
+  #sellNameSuggest { border-radius: 14px; box-shadow: 0 6px 0 rgba(36,51,47,0.08), 0 18px 30px rgba(36,51,47,0.18); }
+  .perm-box { background: linear-gradient(180deg, #F1EEE6, #F8F6F1); box-shadow: inset 0 3px 8px rgba(36,51,47,0.10); border-radius: 14px; }
+  .account-row { background: linear-gradient(180deg, #fff, #F8F6F1); border: none; border-radius: 14px; padding: 12px 14px; margin-bottom: 8px; box-shadow: 0 3px 0 rgba(36,51,47,0.07), 0 8px 12px rgba(36,51,47,0.05); }
+
+  /* ---------- modals & login cards ---------- */
+  .auth-bg { background: radial-gradient(900px 420px at 50% -80px, rgba(255,255,255,0.9), rgba(255,255,255,0) 70%), linear-gradient(180deg, #EFEBE1, #F6F2EA); }
+  .auth-card, .modal {
+    border: 1px solid rgba(255,255,255,0.95);
+    border-top: 0;
+    border-radius: 24px;
+    background: linear-gradient(180deg, #FFFFFF, #FBF9F4);
+    box-shadow: 0 10px 0 rgba(36,51,47,0.10), 0 30px 60px rgba(36,51,47,0.22), inset 0 2px 0 #fff;
+  }
+  .auth-card h2, .modal h3 { color: var(--ink); }
+  .modal-bg { background: rgba(36, 51, 47, 0.45); backdrop-filter: blur(3px); }
+  .toast { background: linear-gradient(180deg, #34504A, #24332F); box-shadow: 0 5px 0 rgba(0,0,0,0.25), 0 14px 26px rgba(0,0,0,0.30); }
+
+  /* ---------- accounting tab ---------- */
+  :root { --acct: #4D9C76; --acct-deep: #357A59; --acct-soft: #E0F0E7; --loss: #D9645C; }
+  #panel-accounting > h2:first-child { background-color: var(--acct); }
+  #panel-accounting input[type="month"], #panel-accounting input[type="date"] { min-width: 150px; }
+  .tab-btn[data-tab="accounting"].active { background: linear-gradient(180deg,#fff,#E0F0E7); border-color: var(--acct); box-shadow: 0 7px 0 var(--acct-deep), 0 18px 28px rgba(53,122,89,0.30); }
+
+  .sub-h {
+    font-family: 'Noto Kufi Arabic', sans-serif; font-size: 16px; color: var(--ink);
+    margin: 26px 0 12px; padding: 4px 12px 4px 0; border-right: 5px solid var(--acct); border-radius: 3px;
+  }
+  .period-row { gap: 14px; align-items: flex-end; }
+
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; }
+  .kpi {
+    border-radius: 18px; padding: 14px 16px 16px;
+    background: linear-gradient(180deg, #FFFFFF, #F5F2EA);
+    border: 1px solid rgba(255,255,255,0.95);
+    box-shadow: 0 6px 0 rgba(36,51,47,0.10), 0 14px 22px rgba(36,51,47,0.10), inset 0 2px 0 #fff;
+    position: relative; overflow: hidden;
+  }
+  .kpi::before { content: ""; position: absolute; top: 0; right: 0; width: 5px; height: 100%; background: var(--kpi, var(--sell)); }
+  .kpi .k-label { font-family: 'Noto Kufi Arabic', sans-serif; font-size: 12.5px; color: var(--ink-dim); margin-bottom: 6px; }
+  .kpi .k-val { font-family: 'Noto Kufi Arabic', sans-serif; font-size: 21px; font-weight: 700; color: var(--ink); line-height: 1.3; word-break: break-word; }
+  .kpi .k-sub { font-size: 12px; color: var(--ink-dim); margin-top: 2px; direction: ltr; text-align: right; }
+  .kpi.k-sell { --kpi: var(--sell); } .kpi.k-cost { --kpi: var(--accounts); } .kpi.k-gross { --kpi: var(--inventory); }
+  .kpi.k-exp { --kpi: var(--history); } .kpi.k-info { --kpi: #8A95A8; }
+  .kpi.k-profit { --kpi: var(--acct); background: linear-gradient(180deg, #FFFFFF, #DDF0E5); }
+  .kpi.k-profit .k-val { color: var(--acct-deep); }
+  .kpi.k-loss { --kpi: var(--loss); background: linear-gradient(180deg, #FFFFFF, #F8DEDA); }
+  .kpi.k-loss .k-val { color: #B8443C; }
+  .kpi.k-wide { grid-column: span 2; }
+
+  .acct-note { font-size: 12.5px; color: var(--ink-dim); margin-top: 10px; line-height: 1.9; }
+  .acct-note .warn { color: #B8443C; font-weight: 500; }
+
+  .acct-chart {
+    display: flex; align-items: stretch; gap: 8px; height: 190px; overflow-x: auto; padding: 10px 10px 4px;
+    border-radius: 16px; background: linear-gradient(180deg, #F2EFE8, #F8F6F1);
+    box-shadow: inset 0 4px 10px rgba(36,51,47,0.10), 0 1px 0 #fff;
+  }
+  .acct-chart .col { flex: 1 0 34px; max-width: 70px; display: flex; flex-direction: column; align-items: center; }
+  .acct-chart .plot { flex: 1; width: 100%; position: relative; }
+  .acct-chart .zero { position: absolute; left: 0; right: 0; height: 2px; background: rgba(36,51,47,0.25); }
+  .acct-chart .bar { position: absolute; left: 18%; right: 18%; border-radius: 6px; box-shadow: 0 3px 0 rgba(0,0,0,0.15), inset 0 2px 0 rgba(255,255,255,0.35); }
+  .acct-chart .bar.pos { background: linear-gradient(180deg, #6CBF92, #3F9B6E); }
+  .acct-chart .bar.neg { background: linear-gradient(180deg, #E88C84, #C9534A); }
+  .acct-chart .lbl { font-size: 10.5px; color: var(--ink-dim); margin-top: 4px; direction: ltr; white-space: nowrap; }
+  .acct-chart-empty { margin: auto; color: var(--ink-dim); font-size: 13px; }
+
+  td.pos { color: #2E8458; font-weight: 700; }
+  td.neg { color: #B8443C; font-weight: 700; }
+
+  @media (max-width: 640px) {
+    .kpi.k-wide { grid-column: span 1; }
+    .kpi .k-val { font-size: 18px; }
+    .panel > h2:first-child { margin: 0 -16px 18px; padding: 16px; font-size: 19px; }
+    .divider { padding: 12px 12px 0; }
+    table { border-spacing: 0 6px; }
   }
 </style>
 </head>
@@ -599,7 +1013,21 @@
 
 <header>
   <div class="brand">
-    <span class="logo-badge">⚕️</span>
+    <span class="logo-badge">
+      <svg viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="cadG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2E6FA8"/><stop offset="1" stop-color="#173F6B"/></linearGradient>
+        </defs>
+        <path d="M50 22 C38 14 18 18 6 26 C20 26 30 30 44 34 Z" fill="url(#cadG)"/>
+        <path d="M50 22 C62 14 82 18 94 26 C80 26 70 30 56 34 Z" fill="url(#cadG)"/>
+        <path d="M44 34 C30 36 20 36 12 38 C26 42 36 44 46 42 Z" fill="url(#cadG)" opacity=".85"/>
+        <path d="M56 34 C70 36 80 36 88 38 C74 42 64 44 54 42 Z" fill="url(#cadG)" opacity=".85"/>
+        <rect x="47" y="24" width="6" height="82" rx="3" fill="#1D4F82"/>
+        <circle cx="50" cy="20" r="7" fill="#2E6FA8"/>
+        <path d="M50 44 C26 50 74 62 50 70 C26 78 74 90 50 98" fill="none" stroke="#2E6FA8" stroke-width="5" stroke-linecap="round"/>
+        <path d="M50 44 C74 50 26 62 50 70 C74 78 26 90 50 98" fill="none" stroke="#173F6B" stroke-width="4" stroke-linecap="round" opacity=".9"/>
+      </svg>
+    </span>
     <h1>سیستەمی بەڕێوەبردنی دەرمانخانە</h1>
   </div>
   <div class="row" style="gap:18px;">
@@ -609,26 +1037,107 @@
     </div>
     <div class="user-box">
       <span id="currentUserLabel"></span>
-      <button class="btn-ghost btn-sm" id="logoutBtn">دەرچوون</button>
+      <button class="btn-ghost btn-sm" id="logoutBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h4"/><path d="M16 8l4 4-4 4"/><path d="M20 12H9"/></svg> دەرچوون</button>
     </div>
   </div>
 </header>
 
+<div class="divider"><span><svg viewBox="0 0 24 24" fill="none" stroke="#5B6B66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4"/><rect x="8" y="13" width="8" height="5" rx="1"/></svg></span></div>
+
 <nav>
-  <button class="tab-btn active" data-tab="sell" id="sellTabBtn"><span class="tab-icon">🛒</span> فرۆشتن</button>
-  <button class="tab-btn" data-tab="inventory" id="inventoryTabBtn"><span class="tab-icon">📦</span> کۆگا</button>
-  <button class="tab-btn" data-tab="history" id="historyTabBtn"><span class="tab-icon">🧾</span> مێژووی فرۆشتن</button>
-  <button class="tab-btn" data-tab="accounts" id="accountsTabBtn" style="display:none;"><span class="tab-icon">👥</span> هەژمارەکان</button>
+  <button class="tab-btn active" data-tab="sell" id="sellTabBtn">
+    <span class="tab-art">
+      <svg viewBox="0 0 145 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <defs><linearGradient id="gSell" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5A8FD0"/><stop offset="1" stop-color="#2E5C99"/></linearGradient></defs>
+        <rect width="145" height="100" fill="url(#gSell)"/>
+        <ellipse cx="72" cy="92" rx="52" ry="7" fill="rgba(0,0,0,.25)"/>
+        <rect x="24" y="52" width="97" height="36" rx="5" fill="#4A4F5A"/>
+        <rect x="24" y="52" width="97" height="8" rx="4" fill="#6B7180"/>
+        <path d="M44 52 L52 22 H96 L104 52 Z" fill="#363B45"/>
+        <rect x="55" y="26" width="35" height="18" rx="2" fill="#7FD6E8"/>
+        <rect x="58" y="30" width="22" height="3" fill="#2E7C8E"/><rect x="58" y="36" width="14" height="3" fill="#2E7C8E"/>
+        <g fill="#C9CFDA"><rect x="30" y="64" width="12" height="8" rx="2"/><rect x="46" y="64" width="12" height="8" rx="2"/><rect x="62" y="64" width="12" height="8" rx="2"/><rect x="78" y="64" width="12" height="8" rx="2"/><rect x="94" y="64" width="12" height="8" rx="2"/><rect x="30" y="76" width="12" height="8" rx="2"/><rect x="46" y="76" width="12" height="8" rx="2"/><rect x="62" y="76" width="12" height="8" rx="2"/></g>
+        <rect x="94" y="76" width="24" height="8" rx="2" fill="#4FBF6A"/>
+      </svg>
+    </span>
+    <span class="tab-title">فرۆشتن</span><span class="tab-sub">Sales Point</span>
+  </button>
+  <button class="tab-btn" data-tab="inventory" id="inventoryTabBtn">
+    <span class="tab-art">
+      <svg viewBox="0 0 145 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <defs><linearGradient id="gInv" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8CC7A0"/><stop offset="1" stop-color="#4E9A6C"/></linearGradient></defs>
+        <rect width="145" height="100" fill="url(#gInv)"/>
+        <g fill="#3F4650"><rect x="22" y="10" width="5" height="82"/><rect x="82" y="10" width="5" height="82"/><rect x="22" y="36" width="65" height="4"/><rect x="22" y="64" width="65" height="4"/><rect x="22" y="90" width="65" height="4"/></g>
+        <g><rect x="28" y="18" width="20" height="18" fill="#D9A867"/><rect x="52" y="22" width="14" height="14" fill="#C58E4E"/><rect x="68" y="16" width="14" height="20" fill="#E3BB7C"/>
+        <rect x="28" y="46" width="24" height="18" fill="#C58E4E"/><rect x="56" y="42" width="22" height="22" fill="#D9A867"/>
+        <rect x="28" y="72" width="18" height="18" fill="#E3BB7C"/><rect x="50" y="76" width="26" height="14" fill="#C58E4E"/></g>
+        <rect x="96" y="44" width="30" height="42" rx="6" fill="#3B4150"/>
+        <rect x="102" y="50" width="18" height="12" rx="2" fill="#E24B4B"/>
+        <rect x="100" y="66" width="22" height="14" rx="3" fill="#2A2F3A"/>
+        <path d="M104 40 L96 24 H122 L118 40 Z" fill="#555C6B"/>
+        <path d="M100 30 L145 22" stroke="rgba(255,80,80,.7)" stroke-width="2.5"/>
+      </svg>
+    </span>
+    <span class="tab-title">کۆگا</span><span class="tab-sub">Storehouse</span>
+  </button>
+  <button class="tab-btn" data-tab="history" id="historyTabBtn">
+    <span class="tab-art">
+      <svg viewBox="0 0 145 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <defs><linearGradient id="gHis" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2E9A92"/><stop offset="1" stop-color="#176B66"/></linearGradient></defs>
+        <rect width="145" height="100" fill="url(#gHis)"/>
+        <rect x="30" y="8" width="70" height="86" rx="4" fill="#fff"/>
+        <path d="M30 94 l7 -5 l7 5 l7 -5 l7 5 l7 -5 l7 5 l7 -5 l7 5 l7 -5 v5 z" fill="#E6EAEF"/>
+        <rect x="36" y="14" width="56" height="9" rx="2" fill="#E1F1F0"/>
+        <text x="64" y="21.5" font-size="7" font-weight="700" text-anchor="middle" fill="#176B66" font-family="Arial, sans-serif">E-RECEIPT</text>
+        <g fill="#B9C2CC"><rect x="38" y="32" width="52" height="3" rx="1.5"/><rect x="38" y="42" width="40" height="3" rx="1.5"/><rect x="38" y="52" width="48" height="3" rx="1.5"/><rect x="38" y="62" width="34" height="3" rx="1.5"/></g>
+        <circle cx="100" cy="64" r="17" fill="rgba(200,236,245,.55)" stroke="#4A5A66" stroke-width="5"/>
+        <path d="M112 77 L128 92" stroke="#4A5A66" stroke-width="7" stroke-linecap="round"/>
+        <path d="M91 58 a11 11 0 0 1 8 -6" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>
+      </svg>
+    </span>
+    <span class="tab-title">مێژووی فرۆشتن</span><span class="tab-sub">Sales History</span>
+  </button>
+  <button class="tab-btn" data-tab="accounting" id="accountingTabBtn" style="display:none;">
+    <span class="tab-art">
+      <svg viewBox="0 0 145 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <defs><linearGradient id="gAct" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6DB790"/><stop offset="1" stop-color="#3A8A66"/></linearGradient></defs>
+        <rect width="145" height="100" fill="url(#gAct)"/>
+        <ellipse cx="72" cy="92" rx="50" ry="6" fill="rgba(0,0,0,.22)"/>
+        <rect x="20" y="40" width="9" height="46" rx="2" fill="#F4F1E8"/><rect x="34" y="28" width="9" height="58" rx="2" fill="#F2D78E"/><rect x="48" y="50" width="9" height="36" rx="2" fill="#F4F1E8"/>
+        <path d="M18 56 L40 36 L54 46 L78 20" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M70 20 H80 V30" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="82" y="38" width="42" height="52" rx="6" fill="#3B4552"/>
+        <rect x="87" y="43" width="32" height="13" rx="2.5" fill="#A8E3C4"/>
+        <g fill="#D8DEE6"><rect x="87" y="61" width="9" height="7" rx="2"/><rect x="99" y="61" width="9" height="7" rx="2"/><rect x="111" y="61" width="8" height="7" rx="2"/><rect x="87" y="72" width="9" height="7" rx="2"/><rect x="99" y="72" width="9" height="7" rx="2"/></g>
+        <rect x="111" y="72" width="8" height="12" rx="2" fill="#E0805A"/>
+      </svg>
+    </span>
+    <span class="tab-title">ژمێریاری</span><span class="tab-sub">Accounting</span>
+  </button>
+  <button class="tab-btn" data-tab="accounts" id="accountsTabBtn" style="display:none;">
+    <span class="tab-art">
+      <svg viewBox="0 0 145 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <defs><linearGradient id="gAcc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7B46C"/><stop offset="1" stop-color="#E07F2A"/></linearGradient></defs>
+        <rect width="145" height="100" fill="url(#gAcc)"/>
+        <circle cx="52" cy="38" r="14" fill="#fff"/><path d="M26 86 a26 24 0 0 1 52 0 z" fill="#fff"/>
+        <circle cx="98" cy="42" r="12" fill="#FDE3C2"/><path d="M76 88 a22 21 0 0 1 44 0 z" fill="#FDE3C2"/>
+        <circle cx="112" cy="24" r="9" fill="#4FBF6A"/><path d="M107 24 l4 4 l7 -8" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+    <span class="tab-title">هەژمارەکان</span><span class="tab-sub">Accounts</span>
+  </button>
 </nav>
+
+<div class="divider"><span><svg viewBox="0 0 24 24" fill="none" stroke="#5B6B66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/><path d="M2 3h3l2.6 12.2a1 1 0 0 0 1 .8h9.1a1 1 0 0 0 1-.8L20.5 7H6"/></svg></span></div>
 
 <main>
 
   <!-- SELL TAB -->
   <section class="panel active" id="panel-sell">
-    <h2>🛒 خستنە ناو سەبەتەی فرۆشتن</h2>
+    <h2><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.6 12.2a1 1 0 0 0 1 .8h9.1a1 1 0 0 0 1-.8L20.5 7H6"/></svg> خستنە ناو سەبەتەی فرۆشتن</h2>
     <div class="row">
       <input type="text" id="sellBarcodeInput" placeholder="بارکۆد بنووسە یان سکانی بکە و Enter بکە" style="flex:1; min-width:220px;">
-      <button class="btn-amber" id="openScannerSell">📷 کردنەوەی کامێرا</button>
+      <button class="btn-amber" id="openScannerSell"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><radialGradient id="lens" cx=".4" cy=".35" r=".75"><stop offset="0" stop-color="#7FB4FF"/><stop offset=".45" stop-color="#1D3E86"/><stop offset="1" stop-color="#0A1636"/></radialGradient></defs><circle cx="24" cy="24" r="22" fill="#2B2F38"/><circle cx="24" cy="24" r="17" fill="#454B58"/><circle cx="24" cy="24" r="12" fill="url(#lens)"/><circle cx="19" cy="19" r="3.4" fill="rgba(255,255,255,.75)"/></svg> کردنەوەی کامێرا</button>
     </div>
     <p style="font-size:12px; color:var(--ink-dim); margin-top:6px;">تێبینی: ئامێری سکانەری بارکۆدی USB/دەستی خۆکار کاردەکات — تەنها بارکۆدەکە سکان بکە لە هەر شوێنێکی سیستەمەکە، خۆی بارکۆدەکە دەناسێتەوە و زیادی دەکات.</p>
 
@@ -744,6 +1253,90 @@
     <p class="empty-note" id="historyEmptyNote" style="display:none;">هێشتا هیچ فرۆشتنێک تۆمار نەکراوە</p>
   </section>
 
+  <!-- ACCOUNTING TAB (profit / loss / capital / expenses) -->
+  <section class="panel" id="panel-accounting">
+    <h2>📊 ژمێریاری، قازانج و زیان</h2>
+
+    <div class="row period-row">
+      <div class="field" style="min-width:130px; margin-bottom:0;">
+        <label>ماوە</label>
+        <select id="acctMode">
+          <option value="month">مانگ</option>
+          <option value="year">ساڵ</option>
+          <option value="all">هەموو کات</option>
+        </select>
+      </div>
+      <div class="field" id="acctMonthWrap" style="min-width:170px; margin-bottom:0;">
+        <label>مانگ</label>
+        <input type="month" id="acctMonth">
+      </div>
+      <div class="field" id="acctYearWrap" style="min-width:120px; margin-bottom:0; display:none;">
+        <label>ساڵ</label>
+        <input type="number" id="acctYear" min="2000" max="2100">
+      </div>
+    </div>
+
+    <h3 class="sub-h">قازانج و زیانی ئەم ماوەیە</h3>
+    <div class="kpi-grid" id="acctPeriodKpis"></div>
+    <p class="acct-note" id="acctNote"></p>
+
+    <h3 class="sub-h">کۆگا و سەرمایە (ئێستا)</h3>
+    <div class="kpi-grid" id="acctStockKpis"></div>
+
+    <h3 class="sub-h" id="acctChartTitle">پێشاندانی قازانج</h3>
+    <div class="acct-chart" id="acctChart"></div>
+    <table>
+      <thead>
+        <tr>
+          <th id="acctBucketTh">بەروار</th>
+          <th>فرۆشتن</th>
+          <th>نرخی کڕینی فرۆشراو</th>
+          <th>قازانجی گشتی</th>
+          <th>خەرجی</th>
+          <th>قازانجی پاک / زیان</th>
+        </tr>
+      </thead>
+      <tbody id="acctBreakdownBody"></tbody>
+    </table>
+    <p class="empty-note" id="acctBreakdownEmpty" style="display:none;">هیچ فرۆشتن یان خەرجییەک لەم ماوەیەدا نییە</p>
+
+    <h3 class="sub-h">زۆرترین دەرمانی فرۆشراو لەم ماوەیەدا</h3>
+    <table>
+      <thead>
+        <tr><th>ناوی دەرمان</th><th>عدد فرۆشراو</th><th>فرۆشتن</th><th>قازانج</th></tr>
+      </thead>
+      <tbody id="acctTopBody"></tbody>
+    </table>
+    <p class="empty-note" id="acctTopEmpty" style="display:none;">هیچ فرۆشتنێک نییە</p>
+
+    <h3 class="sub-h">خەرجییەکان (کرێ، مووچە، کارەبا...)</h3>
+    <div class="row" style="align-items:flex-end;">
+      <div class="field" style="min-width:150px; margin-bottom:0;">
+        <label>بەروار</label>
+        <input type="date" id="expDate">
+      </div>
+      <div class="field" style="flex:1; min-width:170px; margin-bottom:0;">
+        <label>جۆر / ناونیشان</label>
+        <input type="text" id="expTitle" placeholder="نموونە: کرێی دوکان" list="expTitleList" autocomplete="off">
+        <datalist id="expTitleList">
+          <option value="کرێی دوکان"></option><option value="مووچە"></option><option value="کارەبا"></option>
+          <option value="ئاو"></option><option value="ئینتەرنێت"></option><option value="گواستنەوە"></option>
+          <option value="باج و ڕەسم"></option><option value="هی تر"></option>
+        </datalist>
+      </div>
+      <div class="field" style="min-width:150px; margin-bottom:0;">
+        <label>بڕ (IQD)</label>
+        <input type="number" id="expAmount" min="0" placeholder="0">
+      </div>
+      <button class="btn-primary" id="addExpenseBtn">+ زیادکردنی خەرجی</button>
+    </div>
+    <table>
+      <thead><tr><th>بەروار</th><th>جۆر</th><th>بڕ (IQD)</th><th></th></tr></thead>
+      <tbody id="expBody"></tbody>
+    </table>
+    <p class="empty-note" id="expEmpty" style="display:none;">هیچ خەرجییەک لەم ماوەیەدا تۆمار نەکراوە</p>
+  </section>
+
   <!-- ACCOUNTS TAB (admin / permission-managed) -->
   <section class="panel" id="panel-accounts">
     <h2 id="memberFormTitle">👤 دروستکردنی هەژماری ئەندام</h2>
@@ -822,6 +1415,10 @@
     </div>
     <p style="font-size:12px; color:var(--ink-dim); margin:-8px 0 14px;">تەنها یەکێکیان بنووسە، ئەوی تر بەپێی نرخی دراوی سەرەوە (لە هێدەرەکەدا) خۆکار دادەنرێت.</p>
     <div class="field">
+      <label>نرخی کڕین بە دینار (IQD) — بۆ ژمێریاری و قازانج</label>
+      <input type="number" id="fCostIQD" placeholder="نرخی کڕینی یەک دانە" min="0">
+    </div>
+    <div class="field">
       <label>بەرواری بەسەرچوون</label>
       <input type="date" id="fExpiry">
     </div>
@@ -886,6 +1483,7 @@
     { key: 'inventory_delete',label: 'سڕینەوەی دەرمان لە کۆگا' },
     { key: 'history_view',    label: 'بینینی مێژووی فرۆشتن' },
     { key: 'apply_discount',  label: 'دانانی داشکاندن لەکاتی فرۆشتن' },
+    { key: 'accounting_view', label: 'بینینی ژمێریاری و قازانج و خەرجی' },
     { key: 'accounts_manage', label: 'بەڕێوەبردنی هەژمارەکان' }
   ];
   const ALL_PERMISSION_KEYS = PERMISSIONS.map(p => p.key);
@@ -895,7 +1493,10 @@
     sales: [],     // {time, items:[{barcode,name,qty,priceIQD,priceUSD}], totalIQD, totalUSD}
     users: [],     // {username, passwordHash, role: 'admin' | 'member', permissions: [keys]}
     categories: [], // ["دژە ئازار", ...] — built up from whatever the user types in, no presets
-    exchangeRate: 1450 // IQD per 1 USD, shared across every device
+    exchangeRate: 1450, // IQD per 1 USD, shared across every device
+    expenses: [],       // {id, date:'YYYY-MM-DD', title, amountIQD}
+    ledger: {},         // per-day totals for accounting: {'YYYY-MM-DD': {rev, cost, units, orders, items:{key:{n,q,r,c}}}}
+    ledgerMigrated: false
   };
 
   let cart = []; // {barcode, name, qty, priceIQD, priceUSD, stockQty}
@@ -917,6 +1518,9 @@
         state.users = parsed.users || [];
         state.categories = parsed.categories || [];
         state.exchangeRate = parsed.exchangeRate || 1450;
+        state.expenses = parsed.expenses || [];
+        state.ledger = parsed.ledger || {};
+        state.ledgerMigrated = !!parsed.ledgerMigrated;
       }
     } catch (e) { console.error('local cache read error', e); }
   }
@@ -957,6 +1561,9 @@
         state.users = val.users || [];
         state.categories = val.categories || [];
         state.exchangeRate = val.exchangeRate || state.exchangeRate || 1450;
+        state.expenses = val.expenses || [];
+        state.ledger = val.ledger || {};
+        state.ledgerMigrated = !!val.ledgerMigrated;
       }
       cacheLocally();
       applyExchangeRateToInput();
@@ -967,6 +1574,7 @@
         renderMembers();
         renderCategoryFilterOptions();
         renderCategoryDatalist();
+        if (document.getElementById('panel-accounting').classList.contains('active')) renderAccounting();
       }
     }, (err) => {
       console.error('firebase read error', err);
@@ -976,10 +1584,57 @@
   }
 
   // ---------- auth ----------
+  // Pure-JS SHA-256 fallback: crypto.subtle only exists on https:// pages, so on plain
+  // http:// or some previews the login button silently did nothing. This produces the
+  // exact same hex hash, so existing accounts keep working.
+  function sha256Fallback(bytes) {
+    const K = [0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+    const H = [0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+    const len = bytes.length;
+    const padLen = ((len + 9 + 63) >> 6) << 6;
+    const m = new Uint8Array(padLen);
+    m.set(bytes);
+    m[len] = 0x80;
+    const bitLenHi = Math.floor(len / 0x20000000), bitLenLo = (len << 3) >>> 0;
+    m[padLen-8] = bitLenHi >>> 24; m[padLen-7] = bitLenHi >>> 16; m[padLen-6] = bitLenHi >>> 8; m[padLen-5] = bitLenHi;
+    m[padLen-4] = bitLenLo >>> 24; m[padLen-3] = bitLenLo >>> 16; m[padLen-2] = bitLenLo >>> 8; m[padLen-1] = bitLenLo;
+    const w = new Uint32Array(64);
+    const rotr = (x, n) => (x >>> n) | (x << (32 - n));
+    for (let off = 0; off < padLen; off += 64) {
+      for (let i = 0; i < 16; i++) {
+        const j = off + i * 4;
+        w[i] = (m[j] << 24) | (m[j+1] << 16) | (m[j+2] << 8) | m[j+3];
+      }
+      for (let i = 16; i < 64; i++) {
+        const s0 = rotr(w[i-15], 7) ^ rotr(w[i-15], 18) ^ (w[i-15] >>> 3);
+        const s1 = rotr(w[i-2], 17) ^ rotr(w[i-2], 19) ^ (w[i-2] >>> 10);
+        w[i] = (w[i-16] + s0 + w[i-7] + s1) | 0;
+      }
+      let [a,b,c,d,e,f,g,h] = H;
+      for (let i = 0; i < 64; i++) {
+        const S1 = rotr(e, 6) ^ rotr(e, 11) ^ rotr(e, 25);
+        const ch = (e & f) ^ (~e & g);
+        const t1 = (h + S1 + ch + K[i] + w[i]) | 0;
+        const S0 = rotr(a, 2) ^ rotr(a, 13) ^ rotr(a, 22);
+        const maj = (a & b) ^ (a & c) ^ (b & c);
+        const t2 = (S0 + maj) | 0;
+        h = g; g = f; f = e; e = (d + t1) | 0; d = c; c = b; b = a; a = (t1 + t2) | 0;
+      }
+      H[0] = (H[0] + a) | 0; H[1] = (H[1] + b) | 0; H[2] = (H[2] + c) | 0; H[3] = (H[3] + d) | 0;
+      H[4] = (H[4] + e) | 0; H[5] = (H[5] + f) | 0; H[6] = (H[6] + g) | 0; H[7] = (H[7] + h) | 0;
+    }
+    return H.map(x => (x >>> 0).toString(16).padStart(8, '0')).join('');
+  }
+
   async function hashPassword(pw) {
     const enc = new TextEncoder().encode(pw);
-    const buf = await crypto.subtle.digest('SHA-256', enc);
-    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    try {
+      if (window.crypto && crypto.subtle && crypto.subtle.digest) {
+        const buf = await crypto.subtle.digest('SHA-256', enc);
+        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+      }
+    } catch (e) { /* fall through to the JS implementation */ }
+    return sha256Fallback(enc);
   }
 
   function findUser(username) {
@@ -1004,6 +1659,7 @@
     document.getElementById('inventoryTabBtn').style.display = hasPermission('inventory_view') ? '' : 'none';
     document.getElementById('historyTabBtn').style.display = hasPermission('history_view') ? '' : 'none';
     document.getElementById('accountsTabBtn').style.display = hasPermission('accounts_manage') ? '' : 'none';
+    document.getElementById('accountingTabBtn').style.display = hasPermission('accounting_view') ? '' : 'none';
 
     // inventory buttons
     document.getElementById('openAddModal').style.display = hasPermission('inventory_edit') ? '' : 'none';
@@ -1198,6 +1854,7 @@
       document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
       if (btn.dataset.tab === 'inventory') renderInventory();
       if (btn.dataset.tab === 'history') renderHistory();
+      if (btn.dataset.tab === 'accounting') { if (!hasPermission('accounting_view')) return; renderAccounting(); }
       if (btn.dataset.tab === 'accounts') { if (!hasPermission('accounts_manage')) return; renderMembers(); resetMemberForm(); }
     });
   });
@@ -1356,7 +2013,7 @@
       const med = findMedicine(item.barcode);
       med.qty -= item.qty;
       if (med.qty <= 0) justRanOut.push(med.name);
-      saleItems.push({ barcode: item.barcode, name: item.name, form: item.form || '', qty: item.qty, priceIQD: item.priceIQD, priceUSD: item.priceUSD });
+      saleItems.push({ barcode: item.barcode, name: item.name, form: item.form || '', qty: item.qty, priceIQD: item.priceIQD, priceUSD: item.priceUSD, costIQD: med.costIQD || 0 });
     });
     const sale = {
       time: new Date().toISOString(),
@@ -1372,6 +2029,8 @@
       totalIQD: t.finalIQD,
       totalUSD: t.finalUSD
     };
+    ensureLedgerMigrated();      // seed accounting totals from older sales (once)
+    recordSaleInLedger(sale);    // accounting keeps its own totals, so the 300-sale cap below never loses history
     state.sales.unshift(sale);
     if (state.sales.length > 300) state.sales.length = 300;
     save();
@@ -1695,6 +2354,7 @@
       fQty.value = m.qty;
       fPriceIQD.value = m.priceIQD;
       fPriceUSD.value = m.priceUSD;
+      document.getElementById('fCostIQD').value = m.costIQD || '';
       fExpiry.value = m.expiry || '';
       deleteMedicineBtn.style.display = hasPermission('inventory_delete') ? 'inline-block' : 'none';
     } else {
@@ -1707,6 +2367,7 @@
       fQty.value = '';
       fPriceIQD.value = '';
       fPriceUSD.value = '';
+      document.getElementById('fCostIQD').value = '';
       fExpiry.value = '';
       deleteMedicineBtn.style.display = 'none';
     }
@@ -1728,6 +2389,7 @@
     const qty = parseInt(fQty.value, 10) || 0;
     const priceIQD = parseFloat(fPriceIQD.value) || 0;
     const priceUSD = parseFloat(fPriceUSD.value) || 0;
+    const costIQD = parseFloat(document.getElementById('fCostIQD').value) || 0;
     const expiry = fExpiry.value || '';
 
     if (!barcode || !name) {
@@ -1741,9 +2403,9 @@
 
     if (editingBarcode) {
       const m = findMedicine(editingBarcode);
-      m.name = name; m.category = category; m.form = form; m.qty = qty; m.priceIQD = priceIQD; m.priceUSD = priceUSD; m.expiry = expiry;
+      m.name = name; m.category = category; m.form = form; m.qty = qty; m.priceIQD = priceIQD; m.priceUSD = priceUSD; m.costIQD = costIQD; m.expiry = expiry;
     } else {
-      state.medicines.push({ barcode, name, category, form, qty, priceIQD, priceUSD, expiry });
+      state.medicines.push({ barcode, name, category, form, qty, priceIQD, priceUSD, costIQD, expiry });
     }
     if (category && !state.categories.includes(category)) {
       state.categories.push(category);
@@ -2191,6 +2853,247 @@
       }
       window.scrollTo({ top: document.getElementById('panel-accounts').offsetTop - 20, behavior: 'smooth' });
     }
+  });
+
+  // ---------- ACCOUNTING (profit / loss / capital / expenses) ----------
+  function dateKeyLocal(d) {
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+  function itemKey(barcode) {
+    return String(barcode || 'x').replace(/[^A-Za-z0-9_-]/g, '_') || 'x';
+  }
+
+  function addToLedger(dayKey, sale, costPerUnit) {
+    if (!state.ledger) state.ledger = {};
+    const day = state.ledger[dayKey] || (state.ledger[dayKey] = { rev: 0, cost: 0, units: 0, orders: 0, items: {} });
+    if (!day.items) day.items = {};
+    day.rev += Number(sale.totalIQD) || 0;
+    day.orders += 1;
+    (sale.items || []).forEach(it => {
+      const q = Number(it.qty) || 0;
+      const c = costPerUnit(it) * q;
+      const r = (Number(it.priceIQD) || 0) * q;
+      day.cost += c;
+      day.units += q;
+      const k = itemKey(it.barcode);
+      const e = day.items[k] || (day.items[k] = { n: it.name || '', q: 0, r: 0, c: 0 });
+      e.n = it.name || e.n;
+      e.q += q; e.r += r; e.c += c;
+    });
+  }
+
+  // Sales made before accounting existed have no cost price saved on them, so we use the
+  // medicine's current cost price (if you entered one). Runs only once.
+  function ensureLedgerMigrated() {
+    if (state.ledgerMigrated) return;
+    (state.sales || []).forEach(s => {
+      addToLedger(dateKeyLocal(new Date(s.time)), s, it => {
+        if (it.costIQD !== undefined) return Number(it.costIQD) || 0;
+        const m = findMedicine(it.barcode);
+        return m ? (Number(m.costIQD) || 0) : 0;
+      });
+    });
+    state.ledgerMigrated = true;
+  }
+
+  function recordSaleInLedger(sale) {
+    addToLedger(dateKeyLocal(new Date(sale.time)), sale, it => Number(it.costIQD) || 0);
+  }
+
+  const acctMode = document.getElementById('acctMode');
+  const acctMonth = document.getElementById('acctMonth');
+  const acctYear = document.getElementById('acctYear');
+  const expDate = document.getElementById('expDate');
+  const expTitle = document.getElementById('expTitle');
+  const expAmount = document.getElementById('expAmount');
+
+  function iqd(n) { return fmt(Math.round(n)) + ' د.ع'; }
+  function usdOf(n) {
+    const rate = Number(state.exchangeRate) || 1450;
+    return '$' + fmtUSD(n / rate);
+  }
+  function kpiHtml(label, value, cls, subValue) {
+    return '<div class="kpi ' + cls + '"><div class="k-label">' + label + '</div><div class="k-val">' + value + '</div>' +
+      (subValue ? '<div class="k-sub">' + subValue + '</div>' : '') + '</div>';
+  }
+
+  function renderAccounting() {
+    if (!currentUser || !hasPermission('accounting_view')) return;
+    ensureLedgerMigrated();
+
+    const now = new Date();
+    if (!acctMonth.value) acctMonth.value = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+    if (!acctYear.value) acctYear.value = now.getFullYear();
+    if (!expDate.value) expDate.value = dateKeyLocal(now);
+
+    const mode = acctMode.value;
+    document.getElementById('acctMonthWrap').style.display = mode === 'month' ? '' : 'none';
+    document.getElementById('acctYearWrap').style.display = mode === 'year' ? '' : 'none';
+    const prefix = mode === 'month' ? acctMonth.value : (mode === 'year' ? String(acctYear.value || '') : '');
+
+    // ----- sales totals for the chosen period -----
+    let rev = 0, cost = 0, units = 0, orders = 0;
+    const buckets = {};
+    const bucketOf = (k) => mode === 'month' ? k : (mode === 'year' ? k.slice(0, 7) : k.slice(0, 4));
+    const getB = (k) => buckets[k] || (buckets[k] = { rev: 0, cost: 0, exp: 0 });
+    const top = {};
+
+    Object.keys(state.ledger || {}).forEach(dayKey => {
+      if (prefix && !dayKey.startsWith(prefix)) return;
+      const d = state.ledger[dayKey];
+      rev += d.rev || 0; cost += d.cost || 0; units += d.units || 0; orders += d.orders || 0;
+      const b = getB(bucketOf(dayKey));
+      b.rev += d.rev || 0; b.cost += d.cost || 0;
+      Object.keys(d.items || {}).forEach(ik => {
+        const it = d.items[ik];
+        const t = top[it.n] || (top[it.n] = { q: 0, r: 0, c: 0 });
+        t.q += it.q || 0; t.r += it.r || 0; t.c += it.c || 0;
+      });
+    });
+
+    // ----- expenses for the chosen period -----
+    const expenses = (state.expenses || []).filter(e => !prefix || (e.date || '').startsWith(prefix));
+    let expTotal = 0;
+    expenses.forEach(e => {
+      const a = Number(e.amountIQD) || 0;
+      expTotal += a;
+      getB(bucketOf(e.date || '')).exp += a;
+    });
+
+    const gross = rev - cost;
+    const net = gross - expTotal;
+    const margin = rev > 0 ? (net / rev * 100) : 0;
+
+    document.getElementById('acctPeriodKpis').innerHTML =
+      kpiHtml('کۆی فرۆشتن (دوای داشکاندن)', iqd(rev), 'k-sell', usdOf(rev)) +
+      kpiHtml('نرخی کڕینی ئەو دەرمانانەی فرۆشراون', iqd(cost), 'k-cost', usdOf(cost)) +
+      kpiHtml('قازانجی گشتی (فرۆشتن − نرخی کڕین)', iqd(gross), 'k-gross', usdOf(gross)) +
+      kpiHtml('کۆی خەرجییەکان', iqd(expTotal), 'k-exp', usdOf(expTotal)) +
+      kpiHtml(net >= 0 ? '✅ قازانجی پاک (دوای خەرجی)' : '⚠️ زیانی پاک (دوای خەرجی)', iqd(Math.abs(net)),
+        (net >= 0 ? 'k-profit' : 'k-loss') + ' k-wide', usdOf(Math.abs(net)) + (rev > 0 ? '  ·  ' + margin.toFixed(1) + '%' : '')) +
+      kpiHtml('ژمارەی دەرمانی فرۆشراو', fmt(units) + ' دانە', 'k-info', '') +
+      kpiHtml('ژمارەی فرۆشتنەکان (وەسڵ)', fmt(orders), 'k-info', '');
+
+    // ----- stock & capital (right now, regardless of period) -----
+    const meds = state.medicines || [];
+    let unitsInStock = 0, capCost = 0, capSell = 0, noCost = 0, outCount = 0, expiredUnits = 0, expiredCost = 0, expiredKinds = 0;
+    meds.forEach(m => {
+      const q = Number(m.qty) || 0;
+      const c = Number(m.costIQD) || 0;
+      unitsInStock += q;
+      capCost += q * c;
+      capSell += q * (Number(m.priceIQD) || 0);
+      if (!c) noCost++;
+      if (q <= 0) outCount++;
+      const dl = daysUntil(m.expiry);
+      if (dl !== null && dl < 0 && q > 0) { expiredKinds++; expiredUnits += q; expiredCost += q * c; }
+    });
+    document.getElementById('acctStockKpis').innerHTML =
+      kpiHtml('جۆری دەرمانەکان لە کۆگا', fmt(meds.length), 'k-info', outCount ? fmt(outCount) + ' جۆر تەواو بووە' : '') +
+      kpiHtml('کۆی عددی دەرمانەکان لە کۆگا', fmt(unitsInStock) + ' دانە', 'k-info', '') +
+      kpiHtml('سەرمایەی کۆگا (بە نرخی کڕین)', iqd(capCost), 'k-cost', usdOf(capCost)) +
+      kpiHtml('نرخی کۆگا ئەگەر هەمووی بفرۆشرێت', iqd(capSell), 'k-sell', usdOf(capSell)) +
+      kpiHtml('قازانجی چاوەڕوانکراو لە کۆگا', iqd(capSell - capCost), 'k-gross', usdOf(capSell - capCost)) +
+      kpiHtml('زیانی دەرمانە بەسەرچووەکان', iqd(expiredCost), expiredCost > 0 ? 'k-loss' : 'k-info',
+        expiredKinds ? fmt(expiredKinds) + ' جۆر · ' + fmt(expiredUnits) + ' دانە' : 'هیچ بەسەرچوویەک نییە');
+
+    const notes = [];
+    if (noCost > 0) notes.push('<span class="warn">⚠️ ' + fmt(noCost) + ' دەرمان نرخی کڕینیان دانەنراوە — قازانج بۆ ئەوانە زیاتر دەردەکەوێت. لە کۆگا دەستکاریان بکە و «نرخی کڕین» بنووسە.</span>');
+    notes.push('تێبینی: فرۆشتنەکانی پێش ئەم نوێکردنەوەیە بەپێی نرخی کڕینی ئێستای دەرمانەکان هەژمار کراون (ئەگەر دانرابێت).');
+    document.getElementById('acctNote').innerHTML = notes.join('<br>');
+
+    // ----- breakdown chart + table -----
+    const keys = Object.keys(buckets).filter(k => k).sort();
+    document.getElementById('acctChartTitle').textContent =
+      mode === 'month' ? 'قازانج / زیانی پاک بۆ هەر ڕۆژێک' : (mode === 'year' ? 'قازانج / زیانی پاک بۆ هەر مانگێک' : 'قازانج / زیانی پاک بۆ هەر ساڵێک');
+    document.getElementById('acctBucketTh').textContent = mode === 'month' ? 'ڕۆژ' : (mode === 'year' ? 'مانگ' : 'ساڵ');
+
+    const nets = keys.map(k => buckets[k].rev - buckets[k].cost - buckets[k].exp);
+    const chart = document.getElementById('acctChart');
+    if (!keys.length) {
+      chart.innerHTML = '<div class="acct-chart-empty">هیچ زانیارییەک نییە بۆ ئەم ماوەیە</div>';
+    } else {
+      const maxPos = Math.max(0, ...nets);
+      const maxNeg = Math.max(0, ...nets.map(n => -n));
+      const total = (maxPos + maxNeg) || 1;
+      const zeroTop = maxPos / total * 100;
+      chart.innerHTML = keys.map((k, i) => {
+        const v = nets[i];
+        const h = v === 0 ? 0 : Math.max(2, Math.abs(v) / total * 100);
+        const bar = v >= 0
+          ? '<div class="bar pos" style="bottom:' + (100 - zeroTop) + '%;height:' + h + '%;"></div>'
+          : '<div class="bar neg" style="top:' + zeroTop + '%;height:' + h + '%;"></div>';
+        const lbl = mode === 'month' ? k.slice(8) : (mode === 'year' ? k.slice(5) : k);
+        return '<div class="col" title="' + escapeHtml(k) + ': ' + escapeHtml(iqd(v)) + '"><div class="plot"><div class="zero" style="top:' + zeroTop + '%;"></div>' + bar + '</div><div class="lbl">' + escapeHtml(lbl) + '</div></div>';
+      }).join('');
+    }
+
+    const body = document.getElementById('acctBreakdownBody');
+    body.innerHTML = '';
+    document.getElementById('acctBreakdownEmpty').style.display = keys.length ? 'none' : 'block';
+    keys.slice().reverse().forEach(k => {
+      const b = buckets[k];
+      const g = b.rev - b.cost;
+      const n = g - b.exp;
+      const tr = document.createElement('tr');
+      tr.innerHTML = '<td>' + escapeHtml(k) + '</td><td>' + fmt(Math.round(b.rev)) + '</td><td>' + fmt(Math.round(b.cost)) + '</td><td>' +
+        fmt(Math.round(g)) + '</td><td>' + fmt(Math.round(b.exp)) + '</td><td class="' + (n >= 0 ? 'pos' : 'neg') + '">' +
+        (n >= 0 ? '+' : '−') + fmt(Math.abs(Math.round(n))) + '</td>';
+      body.appendChild(tr);
+    });
+
+    // ----- top sellers -----
+    const topList = Object.keys(top).map(n => ({ n, ...top[n] })).sort((a, b) => b.q - a.q).slice(0, 8);
+    const topBody = document.getElementById('acctTopBody');
+    topBody.innerHTML = '';
+    document.getElementById('acctTopEmpty').style.display = topList.length ? 'none' : 'block';
+    topList.forEach(t => {
+      const p = t.r - t.c;
+      const tr = document.createElement('tr');
+      tr.innerHTML = '<td>' + escapeHtml(t.n) + '</td><td>' + fmt(t.q) + '</td><td>' + fmt(Math.round(t.r)) + '</td><td class="' + (p >= 0 ? 'pos' : 'neg') + '">' + fmt(Math.round(p)) + '</td>';
+      topBody.appendChild(tr);
+    });
+
+    // ----- expenses list -----
+    const expBody = document.getElementById('expBody');
+    expBody.innerHTML = '';
+    document.getElementById('expEmpty').style.display = expenses.length ? 'none' : 'block';
+    expenses.slice().sort((a, b) => (b.date || '').localeCompare(a.date || '')).forEach(e => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = '<td>' + escapeHtml(e.date || '') + '</td><td>' + escapeHtml(e.title || '') + '</td><td>' + fmt(Number(e.amountIQD) || 0) +
+        '</td><td><button class="btn-danger btn-sm" data-exp-id="' + escapeHtml(e.id) + '">سڕینەوە</button></td>';
+      expBody.appendChild(tr);
+    });
+  }
+
+  ['change', 'input'].forEach(ev => {
+    acctMode.addEventListener(ev, renderAccounting);
+    acctMonth.addEventListener(ev, renderAccounting);
+    acctYear.addEventListener(ev, renderAccounting);
+  });
+
+  document.getElementById('addExpenseBtn').addEventListener('click', () => {
+    if (!hasPermission('accounting_view')) return;
+    const date = expDate.value || dateKeyLocal(new Date());
+    const title = expTitle.value.trim();
+    const amountIQD = parseFloat(expAmount.value) || 0;
+    if (!title || amountIQD <= 0) { showToast('تکایە جۆر و بڕی خەرجییەکە بنووسە'); return; }
+    if (!state.expenses) state.expenses = [];
+    state.expenses.push({ id: 'e' + Date.now() + Math.floor(Math.random() * 1000), date, title, amountIQD });
+    save();
+    expTitle.value = '';
+    expAmount.value = '';
+    renderAccounting();
+    showToast('خەرجییەکە زیادکرا ✔');
+  });
+
+  document.getElementById('expBody').addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-exp-id]');
+    if (!btn || !hasPermission('accounting_view')) return;
+    if (!confirm('دڵنیایت لە سڕینەوەی ئەم خەرجییە؟')) return;
+    state.expenses = (state.expenses || []).filter(x => x.id !== btn.dataset.expId);
+    save();
+    renderAccounting();
   });
 
   // ---------- init ----------
