@@ -957,6 +957,149 @@
     .divider { padding: 12px 12px 0; }
     table { border-spacing: 0 6px; }
   }
+  /* =====================================================
+     V3 — TEAL BACKGROUND (matches the colour you sent)
+     ===================================================== */
+  body {
+    background:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='90' height='90' viewBox='0 0 90 90'><g fill='white' fill-opacity='0.07'><rect x='40' y='31' width='10' height='28' rx='3'/><rect x='31' y='40' width='28' height='10' rx='3'/></g></svg>") 0 0 / 90px 90px,
+      radial-gradient(1000px 520px at 50% -140px, rgba(255,255,255,0.30), rgba(255,255,255,0) 70%),
+      radial-gradient(700px 420px at 100% 100%, rgba(0,60,80,0.28), rgba(0,60,80,0) 70%),
+      linear-gradient(180deg, #0A8497 0%, #0096AB 48%, #08889C 100%);
+    background-attachment: fixed;
+  }
+
+  header {
+    border-radius: 0 0 30px 30px;
+    border-bottom: 0;
+    box-shadow: 0 14px 30px rgba(0, 50, 65, 0.35), inset 0 -3px 0 rgba(255,255,255,0.7);
+  }
+
+  .divider::before, .divider::after {
+    background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.55), rgba(255,255,255,0));
+    box-shadow: 0 1px 0 rgba(0,60,80,0.25);
+  }
+  .divider span { box-shadow: 0 4px 0 rgba(0,60,80,0.30), 0 10px 16px rgba(0,50,65,0.28), inset 0 1px 0 #fff; }
+
+  .panel { box-shadow: 0 9px 0 rgba(0,60,80,0.22), 0 28px 48px rgba(0,45,60,0.32), inset 0 2px 0 #fff; }
+  .tab-btn { box-shadow: 0 7px 0 rgba(0,60,80,0.25), 0 16px 24px rgba(0,45,60,0.28), inset 0 2px 0 #fff; }
+  .tab-btn:active { box-shadow: 0 2px 0 rgba(0,60,80,0.25), 0 6px 10px rgba(0,45,60,0.22); }
+
+  .auth-bg {
+    background:
+      radial-gradient(900px 420px at 50% -80px, rgba(255,255,255,0.30), rgba(255,255,255,0) 70%),
+      linear-gradient(180deg, #0A8497 0%, #0096AB 50%, #08889C 100%);
+  }
+  .toast { box-shadow: 0 5px 0 rgba(0,0,0,0.25), 0 14px 26px rgba(0,40,55,0.45); }
+
+  /* ---------- tinted panel surfaces (instead of plain white) ---------- */
+  #panel-sell       { background: linear-gradient(180deg, #EEF4FB 0%, #DFEAF5 100%); }
+  #panel-inventory  { background: linear-gradient(180deg, #EAF6F2 0%, #D9ECE5 100%); }
+  #panel-history    { background: linear-gradient(180deg, #F2EFFB 0%, #E3DEF3 100%); }
+  #panel-accounting { background: linear-gradient(180deg, #EAF6EE 0%, #D9EDE1 100%); }
+  #panel-accounts   { background: linear-gradient(180deg, #FDF2E5 0%, #F5E2CB 100%); }
+  .panel .cart-box, .panel .acct-chart, .panel .perm-box { background: rgba(255,255,255,0.55); }
+  .panel .field label, .panel .empty-note, .panel .acct-note { color: #51625D; }
+  .panel input, .panel select { background: linear-gradient(180deg, #F7F5EF, #FFFFFF); }
+  #sellBarcodeInput { background-color: #EDEAE3 !important; }
+
+  /* =====================================================
+     V4 — ILLUSTRATED HEADER + MOBILE-FIRST LAYOUT
+     ===================================================== */
+  header {
+    color: #fff;
+    background:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='900' height='320' viewBox='0 0 900 320'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23065F73'/><stop offset='.55' stop-color='%230A8196'/><stop offset='1' stop-color='%2314A6B8'/></linearGradient><radialGradient id='r' cx='.2' cy='.05' r='.85'><stop offset='0' stop-color='white' stop-opacity='.30'/><stop offset='1' stop-color='white' stop-opacity='0'/></radialGradient></defs><rect width='900' height='320' fill='url(%23g)'/><rect width='900' height='320' fill='url(%23r)'/><g fill='white' fill-opacity='.07'><circle cx='90' cy='260' r='130'/><circle cx='770' cy='30' r='150'/><circle cx='480' cy='340' r='110'/></g><g fill='%23033F4E' fill-opacity='.30'><rect x='540' y='78' width='360' height='7'/><rect x='540' y='168' width='360' height='7'/><rect x='540' y='258' width='360' height='7'/><rect x='566' y='36' width='26' height='42' rx='5'/><rect x='604' y='46' width='20' height='32' rx='4'/><rect x='660' y='30' width='30' height='48' rx='5'/><rect x='720' y='42' width='22' height='36' rx='4'/><rect x='790' y='34' width='28' height='44' rx='5'/><rect x='850' y='46' width='22' height='32' rx='4'/><rect x='580' y='126' width='30' height='42' rx='5'/><rect x='640' y='120' width='24' height='48' rx='5'/><rect x='712' y='130' width='28' height='38' rx='5'/><rect x='770' y='122' width='26' height='46' rx='5'/><rect x='840' y='132' width='30' height='36' rx='5'/><rect x='560' y='216' width='24' height='42' rx='5'/><rect x='620' y='222' width='30' height='36' rx='5'/><rect x='690' y='212' width='26' height='46' rx='5'/><rect x='760' y='224' width='24' height='34' rx='5'/><rect x='830' y='214' width='30' height='44' rx='5'/></g><g fill='white' fill-opacity='.20'><rect x='300' y='34' width='8' height='24' rx='2'/><rect x='292' y='42' width='24' height='8' rx='2'/><rect x='430' y='200' width='8' height='24' rx='2'/><rect x='422' y='208' width='24' height='8' rx='2'/><rect x='60' y='40' width='6' height='18' rx='2'/><rect x='54' y='46' width='18' height='6' rx='2'/><rect x='500' y='60' width='6' height='18' rx='2'/><rect x='494' y='66' width='18' height='6' rx='2'/></g><g transform='translate(150 150) rotate(-28)'><rect width='92' height='32' rx='16' fill='%23F6FAFA'/><path d='M46 0H76A16 16 0 0 1 76 32H46Z' fill='%23EE8D72'/><rect x='10' y='6' width='64' height='5' rx='2.5' fill='white' fill-opacity='.6'/></g><g transform='translate(330 210) rotate(24) scale(.8)'><rect width='92' height='32' rx='16' fill='%23F6FAFA'/><path d='M46 0H76A16 16 0 0 1 76 32H46Z' fill='%23F2C14E'/><rect x='10' y='6' width='64' height='5' rx='2.5' fill='white' fill-opacity='.6'/></g><g transform='translate(400 60) rotate(-14) scale(.7)'><rect width='92' height='32' rx='16' fill='%23F6FAFA'/><path d='M46 0H76A16 16 0 0 1 76 32H46Z' fill='%2378CFA3'/><rect x='10' y='6' width='64' height='5' rx='2.5' fill='white' fill-opacity='.6'/></g><g><circle cx='230' cy='60' r='19' fill='%23F6FAFA'/><path d='M213 60H247' stroke='%23C9D8DB' stroke-width='3'/><circle cx='222' cy='52' r='5' fill='white' fill-opacity='.7'/><circle cx='40' cy='170' r='14' fill='%23F2C14E'/><circle cx='36' cy='165' r='4' fill='white' fill-opacity='.6'/><circle cx='470' cy='140' r='15' fill='%23EE8D72'/><circle cx='465' cy='135' r='4' fill='white' fill-opacity='.6'/></g><path d='M0 272 C150 240 300 304 450 272 S750 240 900 276 V320 H0Z' fill='white' fill-opacity='.10'/><path d='M0 292 C180 266 330 318 520 288 S780 266 900 296 V320 H0Z' fill='white' fill-opacity='.08'/></svg>") center / cover;
+    border-radius: 0 0 30px 30px;
+    box-shadow: 0 14px 30px rgba(0, 50, 65, 0.38), inset 0 -3px 0 rgba(255,255,255,0.35);
+  }
+  header h1 { color: #fff; text-shadow: 0 2px 0 rgba(0,40,55,0.40), 0 8px 16px rgba(0,30,45,0.35); }
+  header .rate {
+    color: #fff;
+    background: rgba(255,255,255,0.16);
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,0.40);
+    box-shadow: 0 6px 0 rgba(0,40,55,0.25), 0 14px 22px rgba(0,30,45,0.28), inset 0 1px 0 rgba(255,255,255,0.5);
+  }
+  header .rate input { background: #fff; color: #1F3A34; border-bottom-color: #F2C14E; }
+  .user-box { color: #fff; text-shadow: 0 1px 2px rgba(0,30,45,0.45); }
+
+  /* ================= MOBILE ================= */
+  @media (max-width: 640px) {
+    body { padding-bottom: 122px; }
+
+    /* header: compact, two tidy rows */
+    header { padding: 14px 14px 18px; gap: 10px; border-radius: 0 0 24px 24px; }
+    header .logo-badge { width: 54px; height: 54px; padding: 6px; }
+    header h1 { font-size: 17px; line-height: 1.45; }
+    header > .row { flex-direction: row !important; flex-wrap: nowrap; justify-content: space-between; align-items: center; gap: 8px !important; }
+    header .rate { flex: 1 1 auto; min-width: 0; padding: 6px 10px; font-size: 11.5px; border-radius: 14px; gap: 6px; }
+    header .rate input { width: 74px; font-size: 16px; padding: 4px 6px; min-height: 0; }
+    .user-box { gap: 8px; font-size: 12px; flex-shrink: 0; }
+    #currentUserLabel { max-width: 96px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .user-box .btn-ghost { font-size: 0; padding: 0; width: 40px; height: 40px; min-height: 0; justify-content: center; gap: 0; border-radius: 12px; }
+    .user-box .btn-ghost svg { width: 19px; height: 19px; }
+
+    /* navigation becomes a fixed bottom bar */
+    header + .divider { display: none; }
+    nav {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 90;
+      display: flex; justify-content: space-around; gap: 2px;
+      max-width: none; margin: 0;
+      padding: 8px 6px calc(8px + env(safe-area-inset-bottom));
+      background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(236,244,245,0.99));
+      border-radius: 22px 22px 0 0;
+      box-shadow: 0 -8px 26px rgba(0,45,60,0.32), inset 0 2px 0 #fff;
+    }
+    .tab-btn { flex: 1 1 0; min-width: 0; padding: 4px 2px 5px; border-radius: 14px; border: 0; background: transparent; box-shadow: none; gap: 2px; min-height: 0; }
+    .tab-btn:hover, .tab-btn:active { transform: none; box-shadow: none; }
+    .tab-btn .tab-art { aspect-ratio: auto; width: 100%; max-width: 56px; height: 34px; margin: 0 auto 3px; border-radius: 11px; box-shadow: inset 0 -3px 6px rgba(0,0,0,0.18), 0 3px 6px rgba(0,0,0,0.20); }
+    .tab-btn .tab-title { font-size: 10.5px; line-height: 1.25; text-align: center; color: var(--ink-dim); font-weight: 500; }
+    .tab-btn .tab-sub { display: none; }
+    .tab-btn[data-tab].active { transform: translateY(-4px); background: rgba(0,150,171,0.14) !important; box-shadow: none !important; border: 0; }
+    .tab-btn[data-tab].active .tab-title { color: #0A6F80; font-weight: 700; }
+    .tab-btn[data-tab].active .tab-art { box-shadow: inset 0 -3px 6px rgba(0,0,0,0.18), 0 6px 10px rgba(0,60,80,0.35); }
+
+    /* panels and form controls: bigger touch targets */
+    main { padding: 0 10px; }
+    .panel { padding: 0 16px 16px; border-radius: 20px; }
+    input, select { font-size: 16px; min-height: 46px; }
+    button { min-height: 44px; }
+    .btn-sm { min-height: 38px; padding: 8px 12px; }
+    .panel .row { gap: 10px; }
+    .panel .row > .field { flex: 1 1 140px; }
+    .panel .row > button { flex: 1 1 140px; }
+    #sellBarcodeInput { min-height: 54px; }
+    #openScannerSell { flex: 1 1 100%; width: 100%; }
+    #checkoutBtn { flex: 2 1 160px; }
+    .totals { justify-content: stretch; }
+    .totals > div { flex: 1 1 100%; text-align: center; }
+    .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .kpi.k-wide { grid-column: 1 / -1; }
+    .kpi .k-val { font-size: 17px; }
+    .kpi .k-label { font-size: 11.5px; }
+    .sub-h { font-size: 15px; margin-top: 22px; }
+    .period-row .field { flex: 1 1 120px; }
+
+    /* bottom-sheet modals */
+    .modal-bg { align-items: flex-end; padding: 0; }
+    .modal { border-radius: 24px 24px 0 0 !important; max-width: none; width: 100%; max-height: 92vh; padding: 20px 16px calc(20px + env(safe-area-inset-bottom)); }
+    .toast { bottom: 108px; max-width: 92vw; text-align: center; }
+
+    /* tables become readable cards (labels are added by script from the table headings) */
+    .panel table, .panel tbody, .panel tr, .panel td { display: block; }
+    .panel thead { display: none; }
+    .panel table { border-spacing: 0; margin-top: 8px; width: 100%; }
+    .panel tbody tr { margin: 0 0 12px; padding: 4px 14px; border-radius: 16px; background: linear-gradient(180deg, #FFFFFF, #F8F6F1); box-shadow: 0 4px 0 rgba(36,51,47,0.08), 0 10px 16px rgba(36,51,47,0.08); }
+    .panel tbody tr.warn-expiry { background: linear-gradient(180deg, #FBEFD9, #F6E3C2); }
+    .panel tbody tr.danger-expiry, .panel tbody tr.out-of-stock { background: linear-gradient(180deg, #FBE9E6, #F5D6D2); }
+    .panel tbody td { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 9px 0; background: transparent !important; box-shadow: none !important; border-bottom: 1px dashed rgba(36,51,47,0.14); border-radius: 0 !important; word-break: break-word; }
+    .panel tbody td:last-child { border-bottom: 0; }
+    .panel tbody td::before { content: attr(data-label); font-family: 'Noto Kufi Arabic', sans-serif; font-size: 12px; color: var(--ink-dim); flex-shrink: 0; }
+    .panel tbody td[data-label=""]::before { display: none; }
+    .panel tbody td[data-label=""] > button { flex: 1; }
+    .cart-box { padding: 4px 8px 8px; }
+  }
 </style>
 </head>
 <body>
@@ -1128,7 +1271,7 @@
   </button>
 </nav>
 
-<div class="divider"><span><svg viewBox="0 0 24 24" fill="none" stroke="#5B6B66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/><path d="M2 3h3l2.6 12.2a1 1 0 0 0 1 .8h9.1a1 1 0 0 0 1-.8L20.5 7H6"/></svg></span></div>
+<div class="divider"><span id="sectionIcon"><svg viewBox="0 0 24 24" fill="none" stroke="#3F6BA6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/><path d="M2 3h3l2.6 12.2a1 1 0 0 0 1 .8h9.1a1 1 0 0 0 1-.8L20.5 7H6"/></svg></span></div>
 
 <main>
 
@@ -1852,6 +1995,7 @@
       document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
       btn.classList.add('active');
       document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+      setSectionIcon(btn.dataset.tab);
       if (btn.dataset.tab === 'inventory') renderInventory();
       if (btn.dataset.tab === 'history') renderHistory();
       if (btn.dataset.tab === 'accounting') { if (!hasPermission('accounting_view')) return; renderAccounting(); }
@@ -2854,6 +2998,40 @@
       window.scrollTo({ top: document.getElementById('panel-accounts').offsetTop - 20, behavior: 'smooth' });
     }
   });
+
+  // ---------- mobile: give every table cell its column title (used by the card layout) ----------
+  let labelQueued = false;
+  function labelTables() {
+    labelQueued = false;
+    document.querySelectorAll('table').forEach(t => {
+      const heads = Array.from(t.querySelectorAll('thead th')).map(th => th.textContent.trim());
+      t.querySelectorAll('tbody tr').forEach(tr => {
+        Array.from(tr.children).forEach((td, i) => {
+          if (!td.hasAttribute('data-label')) td.setAttribute('data-label', heads[i] || '');
+        });
+      });
+    });
+  }
+  new MutationObserver(() => {
+    if (labelQueued) return;
+    labelQueued = true;
+    requestAnimationFrame(labelTables);
+  }).observe(document.body, { childList: true, subtree: true });
+
+  // ---------- divider icon follows the open section ----------
+  const SECTION_ICONS = {
+    sell:       { color: '#3F6BA6', path: '<circle cx="9" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/><path d="M2 3h3l2.6 12.2a1 1 0 0 0 1 .8h9.1a1 1 0 0 0 1-.8L20.5 7H6"/>' },
+    inventory:  { color: '#3A8576', path: '<path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4"/><path d="M12 11v10"/>' },
+    history:    { color: '#6F5CA8', path: '<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6"/><path d="M9 12h6"/>' },
+    accounting: { color: '#357A59', path: '<path d="M4 20h16"/><rect x="6" y="11" width="3" height="9" rx="0.5"/><rect x="11" y="6" width="3" height="14" rx="0.5"/><rect x="16" y="13" width="3" height="7" rx="0.5"/>' },
+    accounts:   { color: '#C4814A', path: '<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.5 3-6 6-6s6 2.5 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14c3 0 5 2 5 5"/>' }
+  };
+  function setSectionIcon(tab) {
+    const el = document.getElementById('sectionIcon');
+    const ic = SECTION_ICONS[tab];
+    if (!el || !ic) return;
+    el.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="' + ic.color + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ic.path + '</svg>';
+  }
 
   // ---------- ACCOUNTING (profit / loss / capital / expenses) ----------
   function dateKeyLocal(d) {
